@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.vormadal.turborocket.models.ammo.Fragment;
@@ -21,9 +22,8 @@ public class ActorFragment extends Actor {
 	@Override
 	public void draw(Batch batch, float parentAlpha) {
 		Vector2 pos = fragment.getBody().getPosition();
-		float angle = (float) (fragment.getBody().getAngle()*(360/(Math.PI*2)));
 		
-		sprite.setRotation(angle);
+		sprite.setRotation(fragment.getBody().getAngle()*MathUtils.radiansToDegrees);
 		batch.draw(sprite, pos.x, pos.y, 
 				sprite.getOriginX(), sprite.getRegionY(), 
 				sprite.getWidth(), sprite.getHeight(), 

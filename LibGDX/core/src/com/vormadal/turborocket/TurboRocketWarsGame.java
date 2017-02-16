@@ -30,14 +30,17 @@ import com.vormadal.turborocket.models.Ship;
 import com.vormadal.turborocket.models.actors.ActorFragment;
 import com.vormadal.turborocket.models.actors.ActorShip;
 import com.vormadal.turborocket.models.ammo.Bomb;
+import com.vormadal.turborocket.models.ammo.Bullet;
 import com.vormadal.turborocket.models.ammo.Bomb.BombFactory;
 import com.vormadal.turborocket.utils.B2Separator;
 import com.vormadal.turborocket.utils.PropKeys;
 import com.vormadal.turborocket.models.ammo.Cannon;
 import com.vormadal.turborocket.models.ammo.Fragment;
+import com.vormadal.turborocket.models.ammo.SeekerMissile;
 
 public class TurboRocketWarsGame extends ApplicationAdapter  {
 	
+	private WorldEntitiesController entitiesController;
 	private Stage stage;
 	private SpriteBatch batch;
 	private World world;
@@ -56,28 +59,27 @@ public class TurboRocketWarsGame extends ApplicationAdapter  {
     Matrix4 debugMatrix;
     OrthographicCamera camera;
     BitmapFont font;
-    
+    BitmapFont fontTest;
 	@Override
 	public void create () {
 		PropKeys.setDefault();
 		stage = new Stage(new ScreenViewport());
 		world = new World(new Vector2(0f, -1f), true);
+		entitiesController = new WorldEntitiesController(world, stage);
 		
-		frag = new Fragment(new Vector2(0f,0f), new Vector2(30, 30), new Vector2(0,0), world);
-		frag.create();
+	
 //		stage.addActor(new ActorFragment(frag));
 		
-		Bomb bomb =  new Bomb.BombFactory().factory(
-				new Vector2(), 
-				new Vector2(50f,50f), 
-				new Vector2(0f,1f), 
-				world);
-		Cannon<Bomb> stdCannon = new Cannon<Bomb>(new BombFactory(), 1, true,100, world);
-		ship = new Ship<>(world, new Vector2(50f,50f), stdCannon, stdCannon);
-		ship2 = new Ship<>(world, new Vector2(100f,50f), stdCannon, stdCannon);
-		stage.addActor(new ActorShip(ship));
-		stage.addActor(new ActorShip(ship2));
 		
+		Cannon<Bomb> bomb = new Cannon<Bomb>(entitiesController, new BombFactory(), 1, true,100);
+		Cannon<Bullet> bullets = new Cannon<Bullet>(entitiesController, new Bullet.NormalShotFactory(), 3, true, 100);
+		Cannon<SeekerMissile> seeker = new Cannon<SeekerMissile>(entitiesController, new SeekerMissile.SeekerFactory(), 3, true, 100);
+		
+		
+		ship = new Ship<>(entitiesController, new Vector2(50f,50f), seeker, seeker);
+		ship2 = new Ship<>(entitiesController, new Vector2(100f,50f), seeker, seeker);
+
+		fontTest = new BitmapFont();
 		createFloor();
 		
 		inputManager = new InputManager(ship, ship2);
@@ -120,17 +122,25 @@ public class TurboRocketWarsGame extends ApplicationAdapter  {
 	
 	
 
+	
 	@Override
 	public void render () {
 //		camera.update();
 		Gdx.gl.glClearColor(1, 0, 0, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+		
+		entitiesController.lockQueue();
 		// Step the physics simulation forward at a rate of 60hz
         world.step(1f/60f, 6, 2);
+		
+		entitiesController.unlockQueue();
         Gdx.gl.glLineWidth(2);
         
         
 		stage.draw();
+		stage.getBatch().begin();
+		fontTest.draw(stage.getBatch(), "test: " + ship.getBody().getPosition(), 10f, 10f);
+		stage.getBatch().end();
 //		batch.begin();
 //		batch.draw(img, 0, 0);
 //		batch.end();

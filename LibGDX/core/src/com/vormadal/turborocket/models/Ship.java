@@ -10,18 +10,24 @@ import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.vormadal.turborocket.WorldEntitiesController;
+import com.vormadal.turborocket.models.actors.ActorShip;
 import com.vormadal.turborocket.models.ammo.Ammo;
 import com.vormadal.turborocket.models.ammo.Cannon;
 import com.vormadal.turborocket.tasks.AmmoRegenTask;
 import com.vormadal.turborocket.tasks.HPRegenTask;
 import com.vormadal.turborocket.utils.B2Separator;
 
-public class Ship<A1 extends Ammo, A2 extends Ammo> {
+public class Ship<A1 extends Ammo, A2 extends Ammo> implements WorldEntity{
 	private Vector2[] shapeVectors = new Vector2[] { 
 			new Vector2(-7f, -5f).scl(readFloat(SHIP_SCALE)),
 			new Vector2(0f, 0f).scl(readFloat(SHIP_SCALE)),
 			new Vector2(7f, -5f).scl(readFloat(SHIP_SCALE)), 
 			new Vector2(0f, 9f).scl(readFloat(SHIP_SCALE)) };
+	
+	
+	private WorldEntitiesController entitiesController;
 
 	private Vector2 boostVec = new Vector2(0, readFloat(SHIP_BOOST_IMPULSE));
 
@@ -32,12 +38,11 @@ public class Ship<A1 extends Ammo, A2 extends Ammo> {
 	private String id;
 	private String type;
 	private volatile Body body;
-	private volatile World world;
+	private volatile ActorShip actor;
 	private double regenHP = readDouble(SHIP_REGEN_HP);
 	private int regenAmmo = readInt(SHIP_REGEN_AMMO);
-	private final int maxAmmo = readInt(SHIP_MAX_AMMO);
 	private final float rotationSpeed = readFloat(SHIP_ROTATION_SPEED);
-	private int ammo = maxAmmo;
+	
 	private Cannon<A1> cannonStd;
 	private Cannon<A2> cannon1;
 
@@ -46,30 +51,31 @@ public class Ship<A1 extends Ammo, A2 extends Ammo> {
 
 	private Vector2 spawnPoint;
 
-	private long timeOfLastShot = 0;
-	private long timeOfLastRegen = 0;
 	private long hpRegenFrequence = readLong(SHIP_HP_REGEN_FREQUENCY); // msec until next regen
 	private long ammoRegenFrequence = readLong(SHIP_AMMO_REGEN_FREQUENCY);
 
 	private HPRegenTask hpRegenerator = null;
 	private AmmoRegenTask ammoRegen = null;
 
-	public Ship(World world, Vector2 position, Cannon<A1> stdCannon, Cannon<A2> specialCannon) {
+	public Ship(
+			WorldEntitiesController entitiesController,
+			Vector2 position, 
+			Cannon<A1> stdCannon, 
+			Cannon<A2> specialCannon) {
+		
+		this.entitiesController = entitiesController;
+		
 		this.spawnPoint = position;
-		this.world = world;
-		this.body = getNewBody(position.cpy(), world);
 		this.cannonStd = stdCannon;
 		this.cannon1 = specialCannon;
+		entitiesController.createWhenReady(this);
 	}
 
-	private Body getNewBody(Vector2 pos, World world) {
+	public Actor create(World world) {
 		BodyDef bodyDef = new BodyDef();
 		bodyDef.type = BodyType.DynamicBody;
-
-		System.out.println("pos: " + pos);
-		bodyDef.position.set(pos.cpy());
-		Body body = null;
-
+		bodyDef.position.set(spawnPoint.cpy());
+		
 		body = world.createBody(bodyDef);
 
 		FixtureDef fixtureDef = new FixtureDef();
@@ -77,7 +83,13 @@ public class Ship<A1 extends Ammo, A2 extends Ammo> {
 		fixtureDef.friction = 0.3f;
 
 		B2Separator.seperate(body, fixtureDef, shapeVectors, 1);
-		return body;
+		this.actor = new ActorShip(this);
+		return this.actor;
+	}
+	
+	public Actor destroy(World world){
+		world.destroyBody(body);
+		return this.actor;
 	}
 
 	public void setCannonNormal(Cannon<A1> cannon) {
@@ -100,14 +112,6 @@ public class Ship<A1 extends Ammo, A2 extends Ammo> {
 		return this.id;
 	}
 
-	public int getMaxAmmo() {
-		return this.maxAmmo;
-	}
-
-	public int getAmmoCount() {
-		return this.ammo;
-	}
-
 	public String getType() {
 		return this.type;
 	}
@@ -116,45 +120,30 @@ public class Ship<A1 extends Ammo, A2 extends Ammo> {
 		return this.body;
 	}
 
-	private boolean checkTime(long tolerance) {
-		long newTime = System.currentTimeMillis();
-		if (newTime - timeOfLastShot > tolerance) {
-			timeOfLastShot = newTime;
-			return true;
-		}
-		return false;
-	}
+
 
 	public void shootNormal() {
 		if (this.lives <= 0) return;
-		if (checkTime(cannonStd.getReloadTime())){
-			cannonStd.fire(this.getBody().getPosition(), 
+		boolean success = cannonStd.fire(this.getBody().getPosition().cpy(), 
 					this.getBody().getLinearVelocity().cpy(), 
 					this.getBody().getAngle());
-		}
+		
 	}
 
 	public void shootSpecial() {
 		if (this.lives <= 0) return;
-		if (checkTime(cannon1.getReloadTime()))
-			cannon1.fire(this.getBody().getPosition(), 
+		boolean success = cannon1.fire(this.getBody().getPosition().cpy(), 
 					this.getBody().getLinearVelocity().cpy(), 
 					this.getBody().getAngle());
 	}
 
-	public boolean hasAmmo(int amount) {
-		if (this.ammo >= amount)
-			return true;
-		return false;
-	}
-
+	
 	public void boost() {
 		if (this.lives <= 0)
-			return;
-		float angle = (float)(toDegrees(body.getAngle()));		
+			return;	
 		//body.setAngularVelocity(0); // easier to fly
 
-		body.applyLinearImpulse(boostVec.cpy().rotate(angle), body.getPosition(), true);
+		body.applyLinearImpulse(boostVec.cpy().rotateRad(body.getAngle()), body.getPosition(), true);
 		//		body.setLinearVelocity(boostVec.cpy().rotate(angle).add(body.getLinearVelocity()));
 //		System.out.println("boost dir: " + boostVec.cpy().rotate(angle) + " angle: " + angle);
 
@@ -220,11 +209,8 @@ public class Ship<A1 extends Ammo, A2 extends Ammo> {
 		if (ammoRegen == null || ammoRegen.hasStopped()) {
 			ammoRegen = new AmmoRegenTask(this);
 		}
-		if (ammo < maxAmmo) {
-			this.ammo += regenAmmo;
-			if (ammo > maxAmmo)
-				ammo = maxAmmo;
-		}
+		cannonStd.regen(regenAmmo);
+		cannon1.regen(regenAmmo);
 	}
 
 	public void stopAmmoRegen() {
@@ -269,7 +255,7 @@ public class Ship<A1 extends Ammo, A2 extends Ammo> {
 	public void die() {
 		this.lives -= 1;
 		if (this.lives <= 0) {
-			world.destroyBody(getBody());
+			this.entitiesController.destroyWhenReady(this);
 			this.lives = 0;
 			this.hitPoints = 0;
 			return;
@@ -278,10 +264,11 @@ public class Ship<A1 extends Ammo, A2 extends Ammo> {
 	}
 
 	private void respawn() {
-		world.destroyBody(body);
-		body = getNewBody(spawnPoint.cpy(), world);
+		this.entitiesController.destroyWhenReady(this);
+		this.entitiesController.createWhenReady(this);
 		this.hitPoints = maxHitPoints;
-		this.ammo = maxAmmo;
+		cannonStd.regen(Integer.MAX_VALUE);
+		cannon1.regen(Integer.MAX_VALUE);
 	}
 
 	public boolean isWinner() {
@@ -294,10 +281,6 @@ public class Ship<A1 extends Ammo, A2 extends Ammo> {
 
 	public void setWinner() {
 		this.isWinner = true;
-	}
-
-	public void useAmmo(int ammoCost) {
-		this.ammo -= ammoCost;
 	}
 
 	public Object getHPRegenRatio() {

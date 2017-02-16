@@ -40,9 +40,18 @@ public class PropKeys {
 		saveProp(SHIP_MAX_AMMO, 50);
 		saveProp(SHIP_HP_REGEN_FREQUENCY, 200);
 		saveProp(SHIP_AMMO_REGEN_FREQUENCY, 200);
-		saveProp(SHIP_ROTATION_SPEED, 2500);
-		saveProp(SHIP_BOOST_IMPULSE, 400);
-		saveProp(SHIP_SCALE, 5);
+		saveProp(SHIP_ROTATION_SPEED, 300);
+		saveProp(SHIP_BOOST_IMPULSE, 100);
+		saveProp(SHIP_SCALE, 1);
+		
+		saveProp(BULLET_SPEED, 100);
+		
+		saveProp(SEEKER_DENSITY, 1);
+		saveProp(SEEKER_SPEED, 200);
+		saveProp(SEEKER_INIT_SPEED, 150);
+		saveProp(SEEKER_BEFORE_SEEKING, 2);
+		saveProp(SEEKER_TIME_BEFORE_SEEK, 2);
+		saveProp(SEEKER_SUPER_SEEKER, true);
 	}
 	
 	

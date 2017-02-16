@@ -136,6 +136,7 @@ public class ConfigUtil {
 	
 	public static float readFloat(String key){
 		String value = readProp(key);
+		System.out.println(key + "=" + value);
 		return value != null ? Float.valueOf(value) : 0f;
 	}
 	
