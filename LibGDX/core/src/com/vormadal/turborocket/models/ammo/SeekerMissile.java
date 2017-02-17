@@ -3,9 +3,11 @@ package com.vormadal.turborocket.models.ammo;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
+import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.vormadal.turborocket.WorldEntitiesController;
 import com.vormadal.turborocket.models.Ship;
+import com.vormadal.turborocket.models.WorldEntityData;
 import com.vormadal.turborocket.models.actors.ActorSeekerMissile;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
@@ -26,6 +28,7 @@ public class SeekerMissile extends Ammo {
 	private static final boolean superSeekerOn = readBoolean(SEEKER_SUPER_SEEKER);
 	private static float seekerUpdateFrequency = 0.2f;
 	private boolean cacheShips = true;
+	private Task seekerTask;
 
 	public SeekerMissile(Vector2 initialVel, Vector2 pos, Vector2 dir, WorldEntitiesController entitiesController) {
 		super(initialVel, pos, dir, entitiesController);
@@ -39,11 +42,12 @@ public class SeekerMissile extends Ammo {
 		body = world.createBody(bodyDef);
 		PolygonShape shape = new PolygonShape();
 		shape.setAsBox(0.4f, 0.4f);
-		body.createFixture(shape, readFloat(SEEKER_DENSITY));
+		Fixture fix = body.createFixture(shape, readFloat(SEEKER_DENSITY));
+		shape.dispose();
 		body.applyLinearImpulse(dir.scl(initialSpeed), pos, true);
 		//		body.setUserData(new UserDataProp(USER_DATA_SHOT, Color.WHITE, 1, true, this));
 
-		Timer.schedule(new Task() {
+		seekerTask = new Task() {
 			@SuppressWarnings("rawtypes")
 			private ArrayList<Ship> ships = null;
 			@Override
@@ -52,7 +56,6 @@ public class SeekerMissile extends Ammo {
 					ships = entitiesController.getEntities(Ship.class);
 				}
 				
-				System.out.println("seeking: " + ships.size() + " ships");
 				float shortest = 0;
 				Ship<?,?> target = null;
 				for(Ship<?,?> s : ships){
@@ -78,9 +81,17 @@ public class SeekerMissile extends Ammo {
 					entitiesController.destroyWhenReady(SeekerMissile.this);
 				}
 			}
-		}, timeBeforeSeeking, seekerUpdateFrequency);
+		};
+		Timer.schedule(seekerTask, timeBeforeSeeking, seekerUpdateFrequency);
+		body.setUserData(new WorldEntityData(this));
 		
 		return (this.actor = new ActorSeekerMissile(this));
+	}
+	
+	@Override
+	public Actor destroy(World world) {
+		seekerTask.cancel();
+		return super.destroy(world);	
 	}
 
 	public static class SeekerFactory implements AmmoFactory<SeekerMissile>{

@@ -9,58 +9,73 @@ import com.vormadal.turborocket.models.WorldEntity;
 
 public class WorldEntitiesController {
 
-	private LinkedList<WorldEntity> createQueue = new LinkedList<>();
-	private LinkedList<WorldEntity> destroyQueue = new LinkedList<>();
+	private LinkedList<ListItem> queue = new LinkedList<>();
 	private ArrayList<WorldEntity> entities = new ArrayList<>();
-	
-	public enum EntityType {SHIP, AMMO}
+
 	private boolean isLocked = false;
 	private World world;
 	private Stage stage;
-	public WorldEntitiesController(World world, Stage stage){
+
+	private class ListItem{
+		public final WorldEntity entity;
+		public final boolean create;
+		public ListItem(WorldEntity entity, boolean create){
+			this.entity = entity;
+			this.create = create;
+		}
+	}
+	public WorldEntitiesController(World world, Stage stage) {
 		this.world = world;
 		this.stage = stage;
 	}
-	
-	public <T> ArrayList<T> getEntities(Class<T> type){
+
+	public <T> ArrayList<T> getEntities(Class<T> type) {
 		ArrayList<T> matches = new ArrayList<>();
-		for(WorldEntity e : entities){
-			try{
+		for (WorldEntity e : entities) {
+			try {
 				T match = type.cast(e);
 				matches.add(match);
-			}catch(Exception ex){
-				
+			} catch (Exception ex) {
+
 			}
 		}
 		return matches;
 	}
-	
-	public void createWhenReady(WorldEntity entity){
-		entities.add(entity);
-		createQueue.add(entity);
-		executeQueueElements();
+
+	public void createWhenReady(WorldEntity entity) {		
+		queue.add(new ListItem(entity, true));
 	}
-	
-	public void destroyWhenReady(WorldEntity entity){
-		entities.remove(entity);
-		 entity.destroy(world); // test to see if it works
-		
+
+	public void destroyWhenReady(WorldEntity entity) {
+		queue.add(new ListItem(entity, false));
+
 	}
-	
-	private void executeQueueElements(){
-		while(!createQueue.isEmpty() && !isLocked){
-			stage.addActor(createQueue.pop().create(world));
+
+	/**
+	 * It is very important that we destroy bodies before creating. 
+	 */
+	private void executeQueueElements() {
+
+		while (!queue.isEmpty() && !isLocked) {
+			ListItem item = queue.pop();
+			if(item.create){
+				entities.add(item.entity);
+				stage.addActor(item.entity.create(world));
+			}else{
+				entities.remove(item.entity);
+				item.entity.destroy(world);
+			}
 		}
+
 	}
 
 	public void lockQueue() {
 		isLocked = true;
 	}
-	
-	public void unlockQueue(){
+
+	public void unlockQueue() {
 		isLocked = false;
 		executeQueueElements();
 	}
-	
-	
+
 }

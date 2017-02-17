@@ -26,6 +26,7 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.Timer.Task;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import com.vormadal.turborocket.models.Map;
 import com.vormadal.turborocket.models.Ship;
 import com.vormadal.turborocket.models.actors.ActorFragment;
 import com.vormadal.turborocket.models.actors.ActorShip;
@@ -41,6 +42,7 @@ import com.vormadal.turborocket.models.ammo.SeekerMissile;
 public class TurboRocketWarsGame extends ApplicationAdapter  {
 	
 	private WorldEntitiesController entitiesController;
+	private CollisionController collisionController;
 	private Stage stage;
 	private SpriteBatch batch;
 	private World world;
@@ -66,17 +68,17 @@ public class TurboRocketWarsGame extends ApplicationAdapter  {
 		stage = new Stage(new ScreenViewport());
 		world = new World(new Vector2(0f, -1f), true);
 		entitiesController = new WorldEntitiesController(world, stage);
-		
-	
+		collisionController = new CollisionController();
+		world.setContactListener(collisionController);
 //		stage.addActor(new ActorFragment(frag));
 		
-		
-		Cannon<Bomb> bomb = new Cannon<Bomb>(entitiesController, new BombFactory(), 1, true,100);
+		new Map(entitiesController, 640, 480);
+//		Cannon<Bomb> bomb = new Cannon<Bomb>(entitiesController, new BombFactory(), 1, true,100);
 		Cannon<Bullet> bullets = new Cannon<Bullet>(entitiesController, new Bullet.NormalShotFactory(), 3, true, 100);
 		Cannon<SeekerMissile> seeker = new Cannon<SeekerMissile>(entitiesController, new SeekerMissile.SeekerFactory(), 3, true, 100);
 		
 		
-		ship = new Ship<>(entitiesController, new Vector2(50f,50f), seeker, seeker);
+		ship = new Ship<>(entitiesController, new Vector2(50f,50f), bullets, bullets);
 		ship2 = new Ship<>(entitiesController, new Vector2(100f,50f), seeker, seeker);
 
 		fontTest = new BitmapFont();
@@ -126,7 +128,7 @@ public class TurboRocketWarsGame extends ApplicationAdapter  {
 	@Override
 	public void render () {
 //		camera.update();
-		Gdx.gl.glClearColor(1, 0, 0, 1);
+		Gdx.gl.glClearColor(0, 0, 0, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		
 		entitiesController.lockQueue();

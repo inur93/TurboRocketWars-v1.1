@@ -9,15 +9,17 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.Timer.Task;
 import com.vormadal.turborocket.WorldEntitiesController;
+import com.vormadal.turborocket.models.WorldEntityData;
 import com.vormadal.turborocket.models.actors.ActorBomb;
-
+import static com.vormadal.turborocket.utils.PropKeys.*;
+import static com.vormadal.turborocket.utils.ConfigUtil.*;
 public class Bomb  extends Ammo{
 
-	private static int BOMB_AMMO_COST = 10;//BombAmmoCost();
+	private int BOMB_AMMO_COST = 10;//BombAmmoCost();
 	private float impFactor = 20;
 	private long timeToDetonate = 1000;//BombTimeToDetonate(); // msec
 	private int numberFragments = 10;//BombNumberFragments();
-	
+	private Task task;
 	public Bomb(Vector2 initialVel, Vector2 pos, Vector2 dir, WorldEntitiesController entitiesController) {
 		super(initialVel, pos, dir, entitiesController);
 		this.damage = 10;//BombDamage();
@@ -30,11 +32,11 @@ public class Bomb  extends Ammo{
 		bodyDef.position.set(pos);
 		body = world.createBody(bodyDef);
 		PolygonShape shape = new PolygonShape();
+		
 		shape.setAsBox(0.4f, 0.4f);
 //		body.createFixture(shape, SHOT_DENSITY);
 		body.applyLinearImpulse(dir.scl(impFactor), pos, true);
-//		body.setUserData(new UserDataProp(USER_DATA_SHOT, Color.WHITE, 1, true, this));
-		Timer.schedule(new Task() {
+		task = new Task() {
 			
 			@Override
 			public void run() {
@@ -48,11 +50,18 @@ public class Bomb  extends Ammo{
 				}
 				Bomb.this.entitiesController.destroyWhenReady(Bomb.this);
 			}
-		}, timeToDetonate);
+		};
+		Timer.schedule(task, timeToDetonate);
 		
+		body.setUserData(new WorldEntityData(this));
 		return (this.actor = new ActorBomb(this));
 	}
 
+	@Override
+	public Actor destroy(World world) {
+		task.cancel();
+		return super.destroy(world);
+	}
 	
 	public static class BombFactory implements AmmoFactory<Bomb>{
 
@@ -61,7 +70,7 @@ public class Bomb  extends Ammo{
 		}
 		@Override
 		public int getAmmoCost() {
-			return BOMB_AMMO_COST;
+			return readInt(BOMB_COST);
 		}
 	}
 

@@ -8,6 +8,7 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.vormadal.turborocket.models.ammo.Bomb;
+import com.vormadal.turborocket.utils.ActorUtil;
 
 public class ActorBomb extends Actor {
 	private Bomb bomb;
@@ -15,7 +16,8 @@ public class ActorBomb extends Actor {
 	private Sprite sprite = new Sprite(tex);
 	public ActorBomb(Bomb bomb){
 		this.bomb = bomb;
-		sprite.scale(-0.5f);
+		Vector2 bounds = ActorUtil.getSize(bomb.getBody());
+		sprite.setBounds(0, 0, bounds.x, bounds.y);
 	}
 	
 	@Override

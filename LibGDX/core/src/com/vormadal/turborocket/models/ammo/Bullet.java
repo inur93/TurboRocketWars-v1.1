@@ -7,6 +7,7 @@ import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.vormadal.turborocket.WorldEntitiesController;
+import com.vormadal.turborocket.models.WorldEntityData;
 import com.vormadal.turborocket.models.actors.ActorBullet;
 
 import static com.vormadal.turborocket.utils.ConfigUtil.*;
@@ -38,7 +39,7 @@ public class Bullet extends Ammo {
 	 // add first velocity of ship given by initialVel then normal shots speed with ship direction
 	    body.setLinearVelocity(v0);
 	    body.applyLinearImpulse(dir.scl(NORMAL_SHOT_SPEED), pos, true);
-	    System.out.println("pos: " + pos + "; dir: " + dir + "; v0: " + v0 + "; speed: " + NORMAL_SHOT_SPEED);
+	    body.setUserData(new WorldEntityData(this));
 	    return (this.actor = new ActorBullet(this));
 	}
 	

@@ -13,6 +13,7 @@ import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.vormadal.turborocket.WorldEntitiesController;
 import com.vormadal.turborocket.models.WorldEntity;
+import com.vormadal.turborocket.utils.PropKeys;
 
 public abstract class Ammo implements WorldEntity{
 
@@ -26,19 +27,14 @@ public abstract class Ammo implements WorldEntity{
 	protected Vector2 dir;
 	protected long startTime; // ms
 	protected final long shotDuration = readLong(AMMO_DURATION); //ms
-	
+	private int id;
 	public Ammo(Vector2 v0, Vector2 pos, Vector2 dir, WorldEntitiesController entitiesController) {
 		this.v0 = v0;
 		this.pos = pos;
-		System.out.println("dir1: " + dir);
 		this.dir = dir.cpy();
-		System.out.println("dir2: " + this.dir);
 		this.dir.nor();
-		System.out.println("dir3: " + this.dir);
-
+		this.id = PropKeys.nextId();
 		this.entitiesController = entitiesController;	
-//		GameController.tasks.add(this);
-//		GameController.shots.add(this);
 		this.startTime = System.currentTimeMillis();
 		this.entitiesController.createWhenReady(this);
 	}
@@ -57,16 +53,21 @@ public abstract class Ammo implements WorldEntity{
 		return false;
 	}
 	
-	public int ammoCost(){
-		return this.ammoCost;
+	public void collide(){
+		this.entitiesController.destroyWhenReady(this);
 	}
 	
 	/**
 	 * removes body from world and from controller shots list
 	 */
 	public Actor destroy(World world){
+		System.out.println("destroy: " + id);
+		if(body == null) return null;
+		this.actor.remove();
 		world.destroyBody(getBody());
-		return this.actor;
+		this.actor = null;
+		this.body = null;
+		return null;
 	}
 
 	public double getDamage(){

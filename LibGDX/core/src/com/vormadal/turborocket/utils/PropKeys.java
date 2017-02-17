@@ -3,6 +3,10 @@ package com.vormadal.turborocket.utils;
 import static com.vormadal.turborocket.utils.ConfigUtil.*;
 public class PropKeys {
 
+	private static int NEXT_ID = 0;
+	public static int nextId() {
+		return NEXT_ID++;
+	}
 	// AMMO
 	public static final String AMMO_DMG = "AMMO_DMG";
 	public static final String AMMO_COST = "AMMO_COST";
@@ -11,6 +15,13 @@ public class PropKeys {
 	public static final String BULLET_COST = "BULLET_COST";
 	public static final String BULLET_SPEED = "BULLET_SPEED";
 	public static final String BULLET_DENSITY = "BULLET_DENSITY";
+	
+	public static final String BOMB_COST = "BOMB_COST";
+	public static final String BOMB_SPEED = "BOMB_SPEED";
+	public static final String BOMB_DENSITY = "BOMB_DENSITY";
+//	public static final String BOMB_COST = "BOMB_COST";
+//	public static final String BOMB_COST = "BOMB_COST";
+	
 	
 	public static final String SEEKER_COST = "SEEKER_COST";
 	public static final String SEEKER_BEFORE_SEEKING = "SEEKER_BEFORE_SEEKING";

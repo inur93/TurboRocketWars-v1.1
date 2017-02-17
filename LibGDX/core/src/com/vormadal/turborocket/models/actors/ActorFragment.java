@@ -8,6 +8,7 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.vormadal.turborocket.models.ammo.Fragment;
+import com.vormadal.turborocket.utils.ActorUtil;
 
 public class ActorFragment extends Actor {
 	
@@ -16,7 +17,8 @@ public class ActorFragment extends Actor {
 	private Sprite sprite = new Sprite(tex);
 	public ActorFragment(Fragment fragment){
 		this.fragment = fragment;
-		sprite.scale(-0.5f);
+		Vector2 bounds = ActorUtil.getSize(fragment.getBody());
+		sprite.setBounds(0, 0, bounds.x, bounds.y);
 	}
 	
 	@Override

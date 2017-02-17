@@ -7,25 +7,23 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.vormadal.turborocket.models.ammo.SeekerMissile;
+import com.vormadal.turborocket.models.Map;
+import com.vormadal.turborocket.models.ammo.Bullet;
 import com.vormadal.turborocket.utils.ActorUtil;
 
-public class ActorSeekerMissile extends Actor{
-	private SeekerMissile seeker;
-	private Texture tex = new Texture(Gdx.files.internal("ammo/fragment.png"));
+public class ActorMap extends Actor{
+	private Map map;
+	private Texture tex = new Texture(Gdx.files.internal("maps/base-map1.png"));
 	private Sprite sprite = new Sprite(tex);
-	public ActorSeekerMissile(SeekerMissile seeker){
-		this.seeker = seeker;
-		Vector2 bounds = ActorUtil.getSize(seeker.getBody());
-		sprite.setBounds(0, 0, bounds.x, bounds.y);
+	public ActorMap(Map map){
+		this.map = map;
+		sprite.setBounds(0, 0, map.getWidth(), map.getHeight());
 	}
 	
 	@Override
 	public void draw(Batch batch, float parentAlpha) {
-		Vector2 pos = seeker.getBody().getPosition();
 		
-		sprite.setRotation(seeker.getBody().getAngle()*MathUtils.radiansToDegrees);
-		batch.draw(sprite, pos.x, pos.y, 
+		batch.draw(sprite, 0, 0, 
 				sprite.getOriginX(), sprite.getRegionY(), 
 				sprite.getWidth(), sprite.getHeight(), 
 				sprite.getScaleX(), sprite.getScaleY(), 

@@ -7,6 +7,7 @@ import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.vormadal.turborocket.WorldEntitiesController;
+import com.vormadal.turborocket.models.WorldEntityData;
 import com.vormadal.turborocket.models.actors.ActorFragment;
 
 public class Fragment extends Ammo {
@@ -28,6 +29,7 @@ public class Fragment extends Ammo {
 		shape.setAsBox(10f, 15f);
 	    body.createFixture(shape, 10);
 		body.applyLinearImpulse(dir.scl(impFactor), pos, true);
+		body.setUserData(new WorldEntityData(this));
 		return (this.actor = new ActorFragment(this));
 	}
 	

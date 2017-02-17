@@ -5,6 +5,7 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 
 public interface WorldEntity {
 
+	
 	public Actor create(World world);
 	public Actor destroy(World world);
 }

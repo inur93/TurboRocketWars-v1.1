@@ -18,6 +18,7 @@ import com.vormadal.turborocket.models.ammo.Cannon;
 import com.vormadal.turborocket.tasks.AmmoRegenTask;
 import com.vormadal.turborocket.tasks.HPRegenTask;
 import com.vormadal.turborocket.utils.B2Separator;
+import com.vormadal.turborocket.utils.PropKeys;
 
 public class Ship<A1 extends Ammo, A2 extends Ammo> implements WorldEntity{
 	private Vector2[] shapeVectors = new Vector2[] { 
@@ -48,7 +49,8 @@ public class Ship<A1 extends Ammo, A2 extends Ammo> implements WorldEntity{
 
 	private boolean isRotationLocked = false;
 	private boolean isWinner = false;
-
+	//initial value is true due to the fact that the body is not created right away
+	private boolean isDestroyed = true; 
 	private Vector2 spawnPoint;
 
 	private long hpRegenFrequence = readLong(SHIP_HP_REGEN_FREQUENCY); // msec until next regen
@@ -62,16 +64,21 @@ public class Ship<A1 extends Ammo, A2 extends Ammo> implements WorldEntity{
 			Vector2 position, 
 			Cannon<A1> stdCannon, 
 			Cannon<A2> specialCannon) {
-		
+		this.id = String.valueOf(PropKeys.nextId());
 		this.entitiesController = entitiesController;
 		
-		this.spawnPoint = position;
+		this.spawnPoint = position.cpy();
 		this.cannonStd = stdCannon;
 		this.cannon1 = specialCannon;
+		this.actor = new ActorShip(this);
 		entitiesController.createWhenReady(this);
 	}
 
-	public Actor create(World world) {
+	public synchronized Actor create(World world) {
+		if(!isDestroyed()) return null;
+		
+		System.out.println("create: " + this.id);
+		
 		BodyDef bodyDef = new BodyDef();
 		bodyDef.type = BodyType.DynamicBody;
 		bodyDef.position.set(spawnPoint.cpy());
@@ -83,15 +90,23 @@ public class Ship<A1 extends Ammo, A2 extends Ammo> implements WorldEntity{
 		fixtureDef.friction = 0.3f;
 
 		B2Separator.seperate(body, fixtureDef, shapeVectors, 1);
-		this.actor = new ActorShip(this);
+		body.setUserData(new WorldEntityData(this));
+		isDestroyed = false;
 		return this.actor;
 	}
 	
-	public Actor destroy(World world){
+	public synchronized Actor destroy(World world){
+		if(isDestroyed()) return null;
+		System.out.println("destroy: " + id);
+		
 		world.destroyBody(body);
+		isDestroyed = true;
 		return this.actor;
 	}
 
+	public boolean isDestroyed(){
+		return this.isDestroyed;
+	}
 	public void setCannonNormal(Cannon<A1> cannon) {
 		this.cannonStd = cannon;
 	}
@@ -108,9 +123,9 @@ public class Ship<A1 extends Ammo, A2 extends Ammo> implements WorldEntity{
 		isRotationLocked = false;
 	}
 
-	public String getId() {
-		return this.id;
-	}
+//	public String getId() {
+//		return this.id;
+//	}
 
 	public String getType() {
 		return this.type;
@@ -141,11 +156,7 @@ public class Ship<A1 extends Ammo, A2 extends Ammo> implements WorldEntity{
 	public void boost() {
 		if (this.lives <= 0)
 			return;	
-		//body.setAngularVelocity(0); // easier to fly
-
 		body.applyLinearImpulse(boostVec.cpy().rotateRad(body.getAngle()), body.getPosition(), true);
-		//		body.setLinearVelocity(boostVec.cpy().rotate(angle).add(body.getLinearVelocity()));
-//		System.out.println("boost dir: " + boostVec.cpy().rotate(angle) + " angle: " + angle);
 
 	}
 
@@ -154,14 +165,7 @@ public class Ship<A1 extends Ammo, A2 extends Ammo> implements WorldEntity{
 			return;
 		if (isRotationLocked)
 			return;
-		//		body.setAngularVelocity(body.getAngularVelocity()+rotationSpeed);
-		//		body.applyTorque(10, true);
-		//		if(body.getAngularVelocity() < 0) {
-		//			body.setAngularVelocity(0);
-		//		}else{
 		body.applyAngularImpulse(rotationSpeed, true);
-		//		}
-//		System.out.println("left: " + body.getAngularVelocity() + ";" + body.getAngle());
 
 	}
 
@@ -171,18 +175,11 @@ public class Ship<A1 extends Ammo, A2 extends Ammo> implements WorldEntity{
 		if (isRotationLocked)
 			return;
 
-
-		//		body.setAngularVelocity(body.getAngularVelocity()-rotationSpeed);
-		//		body.applyTorque(10, true);
-		//		if(body.getAngularVelocity() > 0){
-		//			body.setAngularVelocity(0);
-		//		}else{
 		body.applyAngularImpulse(-rotationSpeed, true);
-		//		}
-//		System.out.println("right: " + body.getAngularVelocity() + ";" + body.getAngle());
 	}
 
 	public void stopRotation(){
+		if(body == null) return;
 		body.setAngularVelocity(0);
 	}
 
@@ -255,7 +252,6 @@ public class Ship<A1 extends Ammo, A2 extends Ammo> implements WorldEntity{
 	public void die() {
 		this.lives -= 1;
 		if (this.lives <= 0) {
-			this.entitiesController.destroyWhenReady(this);
 			this.lives = 0;
 			this.hitPoints = 0;
 			return;
@@ -264,11 +260,12 @@ public class Ship<A1 extends Ammo, A2 extends Ammo> implements WorldEntity{
 	}
 
 	private void respawn() {
-		this.entitiesController.destroyWhenReady(this);
-		this.entitiesController.createWhenReady(this);
 		this.hitPoints = maxHitPoints;
 		cannonStd.regen(Integer.MAX_VALUE);
 		cannon1.regen(Integer.MAX_VALUE);
+		this.entitiesController.destroyWhenReady(this);
+		this.entitiesController.createWhenReady(this);
+//		 this.body.getAngle()
 	}
 
 	public boolean isWinner() {
