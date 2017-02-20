@@ -32,7 +32,9 @@ public class Map implements WorldEntity{
 
 		groundBody.createFixture(groundBox, 0);
 		groundBody.setUserData(new WorldEntityData(this));
-		return new ActorMap(this);
+		ActorMap actor = new ActorMap(this);
+		actor.setZIndex(1);
+		return actor;
 	}
 
 	@Override

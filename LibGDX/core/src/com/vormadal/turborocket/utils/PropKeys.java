@@ -7,6 +7,12 @@ public class PropKeys {
 	public static int nextId() {
 		return NEXT_ID++;
 	}
+	
+	//screen configs
+	public static final String STATS_BAR_HEIGHT = "STATS_BAR_HEIGHT";
+	public static final String HP_BAR_LENGTH = "HP_BAR_SIZE";
+	public static final String HP_BAR_HEIGHT = "HP_BAR_HEIGHT";
+	
 	// AMMO
 	public static final String AMMO_DMG = "AMMO_DMG";
 	public static final String AMMO_COST = "AMMO_COST";
@@ -43,7 +49,13 @@ public class PropKeys {
 	public static final String SHIP_BOOST_IMPULSE = "SHIP_BOOST_IMPULSE";
 	public static final String SHIP_SCALE = "SHIP_SCALE";
 	
+	
 	public static void setDefault(){
+		
+		saveProp(STATS_BAR_HEIGHT, 50);
+		saveProp(HP_BAR_LENGTH, 100);
+		saveProp(HP_BAR_HEIGHT, 10);
+		
 		saveProp(SHIP_LIVES, 5);
 		saveProp(SHIP_MAX_HP, 100);
 		saveProp(SHIP_REGEN_HP, 5);

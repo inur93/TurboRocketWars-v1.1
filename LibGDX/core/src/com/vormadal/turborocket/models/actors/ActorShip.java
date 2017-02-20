@@ -42,44 +42,11 @@ public class ActorShip extends Actor {
 
 		sprite.setRotation(ship.getBody().getAngle()*MathUtils.radiansToDegrees);
 		
-//		float posx = pos.x-sprite.getWidth()/2;
 		batch.draw(sprite, pos.x-sprite.getWidth()/2, pos.y-sprite.getHeight()/2, 
 				sprite.getOriginX(), sprite.getOriginY(), 
 				sprite.getWidth(), sprite.getHeight(), 
 				sprite.getScaleX(), sprite.getScaleY(), 
 				sprite.getRotation());
-//		batch.draw(ver, pos.x, pos.y, ver.getOriginX(), ver.getOriginY(), 10f, 1, 1, 1, 0);
-//		batch.draw(hor, pos.x, pos.y, hor.getOriginX(), hor.getOriginY(), 1f, 10, 1, 1, 0);
-		
-//		int tpos = 10;
-//		int p0x = round(pos.x), p0y = round(pos.y);
-//		int p1x = round(pos.x+sprite.getWidth()/2), p1y = round(pos.y+sprite.getHeight());
-//		int p2x = round(pos.x+sprite.getWidth()), p2y = round(pos.y);
-//		//		int p3x = round(pos.x), p3y = round(pos.y);
-//
-//
-//		font.draw(batch, ("VER> originX:" + ver.getOriginX() + ";originY:" + ver.getOriginY()), 10, (tpos+=15));
-//		font.draw(batch, ("HOR> originX:" + hor.getOriginX() + ";originY:" + hor.getOriginY()), 10, (tpos+=15));
-//		font.draw(batch, ("scaleX:" + sprite.getScaleX() + ";scaleY:" + sprite.getScaleY()), 10, (tpos+=15));
-//		font.draw(batch, ("originX:" + sprite.getOriginX() + ";originY:" + sprite.getOriginY()), 10, (tpos+=15));
-//		font.draw(batch, ("width:" + sprite.getWidth() + ";height:" + sprite.getHeight()), 10, (tpos+=15));
-		
-//		font.draw(batch, ("p1(x,y)=(" + Math.round(p1x) + "," + Math.round(p1y) + ")"), 10, (tpos+=15));
-//		font.draw(batch, ("p2(x,y)=(" + Math.round(p2x) + "," + Math.round(p2y) + ")"), 10, (tpos+=15));
-//		font.draw(batch, ("dh(y1,y2)=(" + Math.round(p1y-p0y) + "," + Math.round(p2y-p0y) + ")"), 10, (tpos+=15));
-//		font.draw(batch, ("dw(x1,x2)=(" + Math.round(p1x-p0x) + "," + Math.round(p2x-p0x) + ")"), 10, (tpos+=30));
-//
-//		int num = 0;
-//		for(Vector2 v : shipPoints){
-//			font.draw(batch, ("p" + num++ + "(x,y)=(" + Math.round(p0x+v.x) + "," + Math.round(p0y+v.y) + ")"), 10, (tpos+=15));	
-//		}
-
-		//		font.draw(batch, ("p3(x,y)=(" + Math.round(p3x) + "," + Math.round(p3y) + ")"), 10, (tpos+=15));
-
-		//		font.draw(batch, ("p0(x,y)=(" + Math.round(p0x) + "," + Math.round(p0y) + ")"), 10, (tpos+=15));
-		//		font.draw(batch, ("p0(x,y)=(" + Math.round(p0x) + "," + Math.round(p0y) + ")"), 10, (tpos+=15));
-		//		font.draw(batch, ("p0(x,y)=(" + Math.round(p0x) + "," + Math.round(p0y) + ")"), 10, (tpos+=15));
-
 
 
 	}

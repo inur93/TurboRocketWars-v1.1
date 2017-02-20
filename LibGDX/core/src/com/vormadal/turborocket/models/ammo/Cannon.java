@@ -79,6 +79,14 @@ public class Cannon<T extends Ammo> {
 
 		return true;
 	}
+	
+	public int getAmmoCount(){
+		return this.ammo;
+	}
+	
+	public int getMaxAmmoCount(){
+		return this.maxAmmo;
+	}
 
 	public void regen(int regenAmmo) {
 		this.ammo += regenAmmo;
@@ -98,5 +106,6 @@ public class Cannon<T extends Ammo> {
 		}
 		return false;
 	}
+	
 
 }

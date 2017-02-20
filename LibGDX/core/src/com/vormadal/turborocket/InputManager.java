@@ -1,99 +1,52 @@
 package com.vormadal.turborocket;
 
+import java.util.List;
+
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.utils.Timer;
+import com.vormadal.turborocket.models.Player;
 import com.vormadal.turborocket.models.Ship;
+import com.vormadal.turborocket.utils.InputConfiguration;
+import static com.vormadal.turborocket.utils.InputConfiguration.InputCommands.*;
 
 public class InputManager extends Timer.Task implements InputProcessor{
 
-	private Ship<?,?> ship, ship2;
-	private boolean left, right, down, up;
-	private boolean a, d, s, w;
+//	private Ship<?,?> ship, ship2;
+//	private boolean left, right, down, up;
+//	private boolean a, d, s, w;
+	private List<Player> players;
 	
-	
-	public InputManager(Ship<?, ?> ship, Ship<?, ?> ship2) {
-		this.ship = ship;
-		this.ship2 = ship2;
+	public InputManager(List<Player> players) {
+		this.players = players;
 	}
 	@Override
 	public void run() {
-		if(left) ship.left();
-		if(right) ship.right();
-		if(up) ship.boost();
-		if(down) ship.shootNormal();
-		
-		if(!(left || right)){
-			ship.stopRotation();
-		}
-		
-		if(a) ship2.left();
-		if(d) ship2.right();
-		if(w) ship2.boost();
-		if(s) ship2.shootNormal();
-		
-		if(!(a || d)){
-			ship2.stopRotation();
+		for(Player p : players){
+			InputConfiguration c = p.getInputConfig();
+			Ship<?,?> s = p.getShip();
+			
+			if(c.isDown(LEFT)) s.left();
+			if(c.isDown(RIGHT)) s.right();
+			if(c.isDown(BOOST)) s.boost();
+			if(c.isDown(FIRE_NORMAL)) s.shootNormal();;
+			if(c.isDown(FIRE_SPECIAL)) s.shootSpecial();;
+			if(!(c.isDown(LEFT) || c.isDown(RIGHT))) s.stopRotation();;
+			
 		}
 	}
 	@Override
 	public boolean keyDown(int keycode) {
-		switch(keycode){
-		case Input.Keys.RIGHT:
-			right = true;
-			break;
-		case Input.Keys.LEFT:
-			left = true;
-			break;
-		case Input.Keys.UP:
-			up = true;
-			break;
-		case Input.Keys.DOWN:
-			down = true;
-			break;
-		case Input.Keys.A:
-			a = true;
-			break;
-		case Input.Keys.D:
-			d = true;
-			break;
-		case Input.Keys.W:
-			w = true;
-			break;
-		case Input.Keys.S:
-			s = true;
-			break;
+		for(Player p : players){
+			p.getInputConfig().down(keycode);
 		}
 		return true;
 	}
 
 	@Override
 	public boolean keyUp(int keycode) {
-		switch(keycode){
-		case Input.Keys.RIGHT:
-			right = false;
-			break;
-		case Input.Keys.LEFT:
-			left = false;
-			break;
-		case Input.Keys.UP:
-			up = false;
-			break;
-		case Input.Keys.DOWN:
-			down = false;
-			break;
-		case Input.Keys.A:
-			a = false;
-			break;
-		case Input.Keys.D:
-			d = false;
-			break;
-		case Input.Keys.W:
-			w = false;
-			break;
-		case Input.Keys.S:
-			s = false;
-			break;
+		for(Player p : players){
+			p.getInputConfig().up(keycode);
 		}
 		return true;
 	}

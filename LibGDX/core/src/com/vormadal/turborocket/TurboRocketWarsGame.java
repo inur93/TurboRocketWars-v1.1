@@ -1,59 +1,66 @@
 package com.vormadal.turborocket;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
-import com.badlogic.gdx.InputProcessor;
-import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.Body;
-import com.badlogic.gdx.physics.box2d.BodyDef;
-import com.badlogic.gdx.physics.box2d.FixtureDef;
-import com.badlogic.gdx.physics.box2d.PolygonShape;
-import com.badlogic.gdx.physics.box2d.World;
-import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
-import com.badlogic.gdx.physics.box2d.EdgeShape;
-import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.Timer;
-import com.badlogic.gdx.utils.Timer.Task;
+import com.badlogic.gdx.utils.viewport.ExtendViewport;
+import com.badlogic.gdx.utils.viewport.FillViewport;
+import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.vormadal.turborocket.models.Map;
+import com.vormadal.turborocket.models.Player;
 import com.vormadal.turborocket.models.Ship;
-import com.vormadal.turborocket.models.actors.ActorFragment;
-import com.vormadal.turborocket.models.actors.ActorShip;
-import com.vormadal.turborocket.models.ammo.Bomb;
+import com.vormadal.turborocket.models.actors.ActorPlayer;
 import com.vormadal.turborocket.models.ammo.Bullet;
-import com.vormadal.turborocket.models.ammo.Bomb.BombFactory;
-import com.vormadal.turborocket.utils.B2Separator;
-import com.vormadal.turborocket.utils.PropKeys;
 import com.vormadal.turborocket.models.ammo.Cannon;
 import com.vormadal.turborocket.models.ammo.Fragment;
 import com.vormadal.turborocket.models.ammo.SeekerMissile;
+import com.vormadal.turborocket.utils.InputConfiguration;
+import com.vormadal.turborocket.utils.InputConfiguration.InputType;
+import com.vormadal.turborocket.utils.PropKeys;
+import static com.vormadal.turborocket.utils.ConfigUtil.*;
+import static com.vormadal.turborocket.utils.PropKeys.*;
 
 public class TurboRocketWarsGame extends ApplicationAdapter  {
+		
+
+	
+	
+	//configs
+	public int statsBarHeight = readInt(STATS_BAR_HEIGHT);
+	
+	
 	
 	private WorldEntitiesController entitiesController;
 	private CollisionController collisionController;
 	private Stage stage;
-	private SpriteBatch batch;
+	private Stage statsStage;
+//	private SpriteBatch batch;
 	private World world;
 	Fragment frag;
-	Ship ship;
-	Ship ship2;
+	
 	final float PIXELS_TO_METERS = 100f;
 	private Timer timer;
 	private InputManager inputManager;
 	
-	
+	private ArrayList<Player> players;
 	
 	//debug
 	Body bodyEdgeScreen;
@@ -65,68 +72,70 @@ public class TurboRocketWarsGame extends ApplicationAdapter  {
 	@Override
 	public void create () {
 		PropKeys.setDefault();
-		stage = new Stage(new ScreenViewport());
+		//viewport width should be determined by number of players playing on same screen.
+		//the width is the size of the world that should be visible, thus the viewport is smaller on splitscreen.
+		stage = new Stage(new FitViewport(Gdx.graphics.getWidth()/2, Gdx.graphics.getHeight()-statsBarHeight));//new ExtendViewport(640, 480));//new ScreenViewport());
+		statsStage = new Stage(new FillViewport(Gdx.graphics.getWidth(), statsBarHeight));
 		world = new World(new Vector2(0f, -1f), true);
 		entitiesController = new WorldEntitiesController(world, stage);
 		collisionController = new CollisionController();
 		world.setContactListener(collisionController);
 //		stage.addActor(new ActorFragment(frag));
 		
-		new Map(entitiesController, 640, 480);
+		new Map(entitiesController, 640*4, 480*4);
 //		Cannon<Bomb> bomb = new Cannon<Bomb>(entitiesController, new BombFactory(), 1, true,100);
-		Cannon<Bullet> bullets = new Cannon<Bullet>(entitiesController, new Bullet.NormalShotFactory(), 3, true, 100);
+		Cannon<Bullet> bullets = new Cannon<Bullet>(entitiesController, new Bullet.NormalShotFactory(), 1, true, 100);
 		Cannon<SeekerMissile> seeker = new Cannon<SeekerMissile>(entitiesController, new SeekerMissile.SeekerFactory(), 3, true, 100);
 		
 		
-		ship = new Ship<>(entitiesController, new Vector2(50f,50f), bullets, bullets);
-		ship2 = new Ship<>(entitiesController, new Vector2(100f,50f), seeker, seeker);
+		Ship<?,?> ship1 = new Ship<>(entitiesController, new Vector2(50f,50f), bullets, bullets);
+		Ship<?,?> ship2 = new Ship<>(entitiesController, new Vector2(100f,50f), bullets, bullets);
 
-		fontTest = new BitmapFont();
-		createFloor();
+		players = new ArrayList<>();
+//		ScreenData[] data = ScreenUtil.getScreenData(2, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		
-		inputManager = new InputManager(ship, ship2);
+		//used for screenViewport
+//		players.add(new Player(ship1, 
+//				new InputConfiguration(InputType.ARROWS), 
+//				-0.5f, 0,
+//				1, 1,
+//				-0.25f));
+//		players.add(new Player(ship2, 
+//				new InputConfiguration(InputType.WASD), 
+//				0.5f, 0,
+//				1, 1,
+//				0.25f));
+		//used for extendViewport
+		players.add(new Player(ship1, 
+				new InputConfiguration(InputType.ARROWS), 
+				0, 0, //x,y
+				0.5f, 1, // width, height
+				0));
+		players.add(new Player(ship2, 
+				new InputConfiguration(InputType.WASD), 
+				0.5f, 0,
+				0.5f, 1,
+				0));
+		
+		for(Player p : players){
+			ActorPlayer ap = new ActorPlayer(p);
+			statsStage.addActor(ap);
+		}
+		
+		fontTest = new BitmapFont();
+		
+		inputManager = new InputManager(players);
 		Gdx.input.setInputProcessor(inputManager);
 		
 		timer = new Timer();
 		timer.scheduleTask(inputManager, 0f, 1.0f/60f);
-	}
-	
-	private void createFloor(){
 		
-		// Create our body definition
-		BodyDef bodyDef2 = new BodyDef();
-        bodyDef2.type = BodyDef.BodyType.StaticBody;
-        float w = (float)Gdx.graphics.getWidth()/PIXELS_TO_METERS;
-        // Set the height to just 50 pixels above the bottom of the screen so we can see the edge in the
-        // debug renderer
-        float h = (float)Gdx.graphics.getHeight()/PIXELS_TO_METERS- 50f/PIXELS_TO_METERS;
-        //bodyDef2.position.set(0,
-//                h-10/PIXELS_TO_METERS);
-        bodyDef2.position.set(0,0);
-        FixtureDef fixtureDef2 = new FixtureDef();
-
-        EdgeShape edgeShape = new EdgeShape();
-        edgeShape.set(-w/2,-h/2,w/2,-h/2);
-        fixtureDef2.shape = edgeShape;
-
-        bodyEdgeScreen = world.createBody(bodyDef2);
-        bodyEdgeScreen.createFixture(fixtureDef2);
-        edgeShape.dispose();
-
-//        Gdx.input.setInputProcessor(this);
-
-//        debugRenderer = new Box2DDebugRenderer();
-//        font = new BitmapFont();
-//        font.setColor(Color.BLACK);
-//        camera = new OrthographicCamera(Gdx.graphics.getWidth(),Gdx.graphics.
-//                getHeight());	
 	}
-	
-	
 
 	
 	@Override
 	public void render () {
+
 //		camera.update();
 		Gdx.gl.glClearColor(0, 0, 0, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
@@ -135,17 +144,58 @@ public class TurboRocketWarsGame extends ApplicationAdapter  {
 		// Step the physics simulation forward at a rate of 60hz
         world.step(1f/60f, 6, 2);
 		
+        Camera camera = stage.getCamera();
 		entitiesController.unlockQueue();
-        Gdx.gl.glLineWidth(2);
-        
-        
-		stage.draw();
-		stage.getBatch().begin();
-		fontTest.draw(stage.getBatch(), "test: " + ship.getBody().getPosition(), 10f, 10f);
-		stage.getBatch().end();
-//		batch.begin();
+		
+		for(Player p : players){
+			
+			Vector3 pos0 = camera.position;		
+			Vector2 pos1 = p.getCameraPos();
+			Vector3 posOffset = pos0.cpy().sub(pos1.x+Gdx.graphics.getWidth()*p.getPosOffset(),pos1.y, 0);
+			
+			stage.getCamera().translate(posOffset.scl(-1));
+			
+	        stage.getViewport().setScreenX((int) (Gdx.graphics.getWidth()*p.getScreenX()));
+	        stage.getViewport().setScreenWidth((int) (Gdx.graphics.getWidth()*p.getWidth()));
+	        stage.getViewport().setScreenHeight(Gdx.graphics.getHeight()-50);
+	        stage.getViewport().apply();
+			stage.draw();
+			
+			
+			statsStage.getViewport().setScreenY(Gdx.graphics.getHeight()-statsBarHeight);
+			statsStage.getViewport().setScreenWidth(Gdx.graphics.getWidth());
+			statsStage.getViewport().setScreenX(0);
+			statsStage.getViewport().setScreenHeight(50);
+			statsStage.getViewport().apply();
+			statsStage.draw();
+			
+		}
+		
+
+//		Vector2 pos2s = ship2.getBody().getPosition();
+//		Vector3 pos2c = camera.position;		
+//		Vector3 pos2diff = pos2c.cpy().sub(pos2s.x+Gdx.graphics.getWidth()/4, pos2s.y, 0);
+//
+//		stage.getCamera().translate(pos2diff.scl(-1));
+////		Gdx.gl.glViewport(Gdx.graphics.getWidth()/2, 0, Gdx.graphics.getWidth()/2, Gdx.graphics.getHeight());
+////		stage.getViewport().setScreenBounds(Gdx.graphics.getWidth()/2, 0, Gdx.graphics.getWidth()/2, Gdx.graphics.getHeight());
+//		stage.getViewport().setWorldWidth(Gdx.graphics.getWidth());
+//		stage.getViewport().setScreenWidth(Gdx.graphics.getWidth());
+//		stage.getViewport().setScreenX(Gdx.graphics.getWidth()/2);
+//		stage.getViewport().apply();
+//		stage.draw();
+		
+		
+		//		batch.begin();
 //		batch.draw(img, 0, 0);
 //		batch.end();
+	}
+	
+	@Override
+	public void resize(int width, int height) {
+		// TODO Auto-generated method stub
+		super.resize(width, height);
+		
 	}
 	
 	@Override

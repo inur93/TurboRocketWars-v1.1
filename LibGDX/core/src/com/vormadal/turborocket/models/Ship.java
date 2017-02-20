@@ -33,14 +33,14 @@ public class Ship<A1 extends Ammo, A2 extends Ammo> implements WorldEntity{
 	private Vector2 boostVec = new Vector2(0, readFloat(SHIP_BOOST_IMPULSE));
 
 	private int lives = readInt(SHIP_LIVES);
-	private final double maxHitPoints = readDouble(SHIP_MAX_HP);
-	private double hitPoints = maxHitPoints;
+	private final float maxHitPoints = readFloat(SHIP_MAX_HP);
+	private float hitPoints = maxHitPoints;
 
 	private String id;
 	private String type;
 	private volatile Body body;
 	private volatile ActorShip actor;
-	private double regenHP = readDouble(SHIP_REGEN_HP);
+	private float regenHP = readFloat(SHIP_REGEN_HP);
 	private int regenAmmo = readInt(SHIP_REGEN_AMMO);
 	private final float rotationSpeed = readFloat(SHIP_ROTATION_SPEED);
 	
@@ -135,6 +135,13 @@ public class Ship<A1 extends Ammo, A2 extends Ammo> implements WorldEntity{
 		return this.body;
 	}
 
+	public Cannon<?> getNormalCannon(){
+		return this.cannonStd;
+	}
+	
+	public Cannon<?> getSpecialCannon(){
+		return this.cannon1;
+	}
 
 
 	public void shootNormal() {
@@ -183,11 +190,11 @@ public class Ship<A1 extends Ammo, A2 extends Ammo> implements WorldEntity{
 		body.setAngularVelocity(0);
 	}
 
-	public double getMaxHitPoints() {
+	public float getMaxHitPoints() {
 		return this.maxHitPoints;
 	}
 
-	public double getCurHitPoints() {
+	public float getCurHitPoints() {
 		return this.hitPoints;
 	}
 
@@ -282,5 +289,9 @@ public class Ship<A1 extends Ammo, A2 extends Ammo> implements WorldEntity{
 
 	public Object getHPRegenRatio() {
 		return this.regenHP;
+	}
+
+	public String getId() {
+		return this.id;
 	}
 }
