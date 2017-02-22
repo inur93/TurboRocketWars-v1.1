@@ -26,8 +26,8 @@ public class ActorPlayer extends Actor{
 	private Sprite specialAmmo = new Sprite(specialAmmoTex);
 	
 	private BitmapFont font = new BitmapFont();
-	private int hpBarLength = readInt(HP_BAR_LENGTH);
-	private int hpBarHeight = readInt(HP_BAR_HEIGHT);
+	private int hpBarLength = getHpBarLength();
+	private int hpBarHeight = getHpBarHeight();
 	
 	private Player player;
 	
@@ -58,7 +58,7 @@ public class ActorPlayer extends Actor{
 
 		hitpoints.setBounds(0, 0, hpLeft, hpBarHeight);
 //		System.out.println("x,y=" + x + "," + y);
-		System.out.println("nrm ammo: " + cannonNormal.getAmmoCount() + "/" + cannonNormal.getMaxAmmoCount());
+//		System.out.println("nrm ammo: " + cannonNormal.getAmmoCount() + "/" + cannonNormal.getMaxAmmoCount());
 		
 //		font.draw(batch, "Name: " + player.getShip().getId(), x, y+font.getLineHeight());
 		// bars background

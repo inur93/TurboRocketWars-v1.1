@@ -4,6 +4,7 @@ import com.badlogic.gdx.physics.box2d.Contact;
 import com.badlogic.gdx.physics.box2d.ContactImpulse;
 import com.badlogic.gdx.physics.box2d.ContactListener;
 import com.badlogic.gdx.physics.box2d.Manifold;
+import com.vormadal.turborocket.models.Platform;
 import com.vormadal.turborocket.models.Ship;
 import com.vormadal.turborocket.models.WorldEntity;
 import com.vormadal.turborocket.models.WorldEntityData;
@@ -14,18 +15,14 @@ public class CollisionController implements ContactListener{
 
 	@Override
 	public void beginContact(Contact contact) {
-		
+
 		WorldEntityData dataA = (WorldEntityData) contact.getFixtureA().getBody().getUserData();
 		WorldEntityData dataB = (WorldEntityData) contact.getFixtureB().getBody().getUserData();
 		EntityType typeA = dataA.getType();
 		EntityType typeB = dataB.getType();
-//		
-//		WorldEntity e1 = typeA.equals(EntityType.AMMO) || typeA.equals(EntityType.SHIP) 
-//				? dataA.getEntity() : dataB.getEntity();
-//		WorldEntity e2 = e1.equals(dataA.getEntity()) 
-//				? dataB.getEntity() : dataA.getEntity();
+		//		
 		System.out.println("collision: " + typeA + "<->" + typeB);
-		
+
 		switch(typeA){
 		case AMMO:
 			switch(typeB){
@@ -54,6 +51,17 @@ public class CollisionController implements ContactListener{
 			}
 			break;
 		case PLATFORM:
+			switch(typeB){
+			case AMMO:
+				ammoSoloCollision((Ammo)dataB.getEntity());
+				break;
+			case MAP:
+			case PLATFORM:
+				break;
+			case SHIP:
+				ship2Platform((Ship<?,?>) dataB.getEntity(), (Platform) dataA.getEntity());
+				break;
+			}
 			break;
 		case SHIP:
 			switch(typeB){
@@ -64,6 +72,7 @@ public class CollisionController implements ContactListener{
 				ship2Map((Ship<?, ?>) dataA.getEntity());
 				break;
 			case PLATFORM:
+				ship2Platform((Ship<?,?>) dataA.getEntity(), (Platform) dataB.getEntity());
 				break;
 			case SHIP:
 				ship2Ship((Ship<?, ?>) dataA.getEntity(), (Ship<?, ?>) dataB.getEntity());
@@ -71,7 +80,20 @@ public class CollisionController implements ContactListener{
 			}
 			break;
 		}
-		
+
+	}
+
+	private void ship2Platform(Ship<?, ?> ship, Platform platform) {
+		double tol = 10; //degrees
+		// get an angle between 0 and 360 degrees. 
+		double angle = Math.abs(Math.toDegrees(Math.abs(ship.getBody().getAngle()%(Math.PI*2))));
+		System.out.println("angle: " + angle);
+		if(angle <= tol || angle > 360-5){
+			ship.regenerateAmmo();
+			ship.regenerateHP();
+		}else{
+			ship.die();
+		}
 	}
 
 	private void ship2Map(Ship<?, ?> entity) {
@@ -80,30 +102,58 @@ public class CollisionController implements ContactListener{
 
 	@Override
 	public void endContact(Contact contact) {
-		// TODO Auto-generated method stub
-		
+		WorldEntityData dataA = (WorldEntityData) contact.getFixtureA().getBody().getUserData();
+		WorldEntityData dataB = (WorldEntityData) contact.getFixtureB().getBody().getUserData();
+		EntityType typeA = dataA.getType();
+		EntityType typeB = dataB.getType();
+		//		
+		System.out.println("collision end: " + typeA + "<->" + typeB);
+
+		switch(typeA){
+		case PLATFORM:
+			switch(typeB){
+			case SHIP:
+				ship2Platform((Ship<?,?>) dataB.getEntity(), (Platform) dataA.getEntity());
+				break;
+			default:
+				System.out.println("dont care");
+			}
+			break;
+		case SHIP:
+			switch(typeB){
+			case PLATFORM:
+				ship2Platform((Ship<?,?>) dataA.getEntity(), (Platform) dataB.getEntity());
+				break;
+			default:
+				System.out.println("dont care");
+			}
+			break;
+
+		default:
+			System.out.println("dont care");
+		}
 	}
 
 	@Override
 	public void preSolve(Contact contact, Manifold oldManifold) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void postSolve(Contact contact, ContactImpulse impulse) {
 		/* TODO Auto-generated
 		 *  method stub
-		
-		*/
+
+		 */
 	}
 
-	
+
 	private void ship2Ammo(Ship<?,?> ship, Ammo ammo){
 		ship.attack(ammo.getDamage());
 		ammo.collide();
 	}
-	
+
 	private void ship2Ship(Ship<?,?> shipA, Ship<?,?> shipB){
 		shipA.die();
 		shipB.die();
@@ -112,5 +162,5 @@ public class CollisionController implements ContactListener{
 	private void ammoSoloCollision(Ammo ammo){
 		ammo.collide();
 	}
-	
+
 }

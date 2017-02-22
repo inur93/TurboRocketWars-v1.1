@@ -1,5 +1,10 @@
 package com.vormadal.turborocket.models.ammo;
 
+import static com.vormadal.turborocket.utils.PropKeys.getBombCost;
+import static com.vormadal.turborocket.utils.PropKeys.getBombExplosionImpulse;
+import static com.vormadal.turborocket.utils.PropKeys.getBombNumberFragments;
+import static com.vormadal.turborocket.utils.PropKeys.getBombTimeToDetonate;
+
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
@@ -11,14 +16,13 @@ import com.badlogic.gdx.utils.Timer.Task;
 import com.vormadal.turborocket.WorldEntitiesController;
 import com.vormadal.turborocket.models.WorldEntityData;
 import com.vormadal.turborocket.models.actors.ActorBomb;
-import static com.vormadal.turborocket.utils.PropKeys.*;
-import static com.vormadal.turborocket.utils.ConfigUtil.*;
+
+
 public class Bomb  extends Ammo{
 
-	private int BOMB_AMMO_COST = 10;//BombAmmoCost();
-	private float impFactor = 20;
-	private long timeToDetonate = 1000;//BombTimeToDetonate(); // msec
-	private int numberFragments = 10;//BombNumberFragments();
+	private float impFactor = getBombExplosionImpulse(); //20
+	private long timeToDetonate = getBombTimeToDetonate();//1000;//BombTimeToDetonate(); // msec
+	private int numberFragments = getBombNumberFragments(); //10;//BombNumberFragments();
 	private Task task;
 	public Bomb(Vector2 initialVel, Vector2 pos, Vector2 dir, WorldEntitiesController entitiesController) {
 		super(initialVel, pos, dir, entitiesController);
@@ -69,8 +73,8 @@ public class Bomb  extends Ammo{
 			return new Bomb(initialVel, pos, dir, entitiesController);
 		}
 		@Override
-		public int getAmmoCost() {
-			return readInt(BOMB_COST);
+		public float getAmmoCost() {
+			return getBombCost();
 		}
 	}
 

@@ -1,31 +1,33 @@
 package com.vormadal.turborocket.models.ammo;
 
+import static com.vormadal.turborocket.utils.PropKeys.getSeekerCost;
+import static com.vormadal.turborocket.utils.PropKeys.getSeekerDensity;
+import static com.vormadal.turborocket.utils.PropKeys.getSeekerInitSpeed;
+import static com.vormadal.turborocket.utils.PropKeys.getSeekerSpeed;
+import static com.vormadal.turborocket.utils.PropKeys.getSeekerSuperSeeker;
+import static com.vormadal.turborocket.utils.PropKeys.getSeekerTimeBeforeSeek;
+
+import java.util.ArrayList;
+
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
-import com.badlogic.gdx.physics.box2d.Fixture;
+import com.badlogic.gdx.physics.box2d.PolygonShape;
+import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.utils.Timer;
+import com.badlogic.gdx.utils.Timer.Task;
 import com.vormadal.turborocket.WorldEntitiesController;
 import com.vormadal.turborocket.models.Ship;
 import com.vormadal.turborocket.models.WorldEntityData;
 import com.vormadal.turborocket.models.actors.ActorSeekerMissile;
-import com.badlogic.gdx.physics.box2d.PolygonShape;
-import com.badlogic.gdx.physics.box2d.World;
-import com.badlogic.gdx.utils.Timer;
-import com.badlogic.gdx.utils.Timer.Task;
-
-import static com.vormadal.turborocket.utils.ConfigUtil.*;
-import static com.vormadal.turborocket.utils.PropKeys.*;
-
-import java.util.ArrayList;
 
 public class SeekerMissile extends Ammo {
 
-	private static final int SEEKER_AMMO_COST = readInt(SEEKER_COST);
-	private static final float seekerSpeed = readFloat(SEEKER_SPEED);
-	private static final float initialSpeed = readFloat(SEEKER_INIT_SPEED);
-	private static final long timeBeforeSeeking = readLong(SEEKER_TIME_BEFORE_SEEK); // msec
-	private static final boolean superSeekerOn = readBoolean(SEEKER_SUPER_SEEKER);
+	private static final float seekerSpeed = getSeekerSpeed();
+	private static final float initialSpeed = getSeekerInitSpeed();
+	private static final long timeBeforeSeeking = getSeekerTimeBeforeSeek(); // msec
+	private static final boolean superSeekerOn = getSeekerSuperSeeker();
 	private static float seekerUpdateFrequency = 0.2f;
 	private boolean cacheShips = true;
 	private Task seekerTask;
@@ -42,7 +44,7 @@ public class SeekerMissile extends Ammo {
 		body = world.createBody(bodyDef);
 		PolygonShape shape = new PolygonShape();
 		shape.setAsBox(0.4f, 0.4f);
-		Fixture fix = body.createFixture(shape, readFloat(SEEKER_DENSITY));
+		body.createFixture(shape, getSeekerDensity());
 		shape.dispose();
 		body.applyLinearImpulse(dir.scl(initialSpeed), pos, true);
 		//		body.setUserData(new UserDataProp(USER_DATA_SHOT, Color.WHITE, 1, true, this));
@@ -101,8 +103,8 @@ public class SeekerMissile extends Ammo {
 		}
 
 		@Override
-		public int getAmmoCost() {
-			return SEEKER_AMMO_COST;
+		public float getAmmoCost() {
+			return getSeekerCost();
 		}
 
 	}

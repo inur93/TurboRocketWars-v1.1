@@ -13,10 +13,12 @@ import com.vormadal.turborocket.utils.ActorUtil;
 
 public class ActorMap extends Actor{
 	private Map map;
-	private Texture tex = new Texture(Gdx.files.internal("maps/frozen.jpg"));//"maps/base-map1.png"));
-	private Sprite sprite = new Sprite(tex);
+	private Texture tex;// = new Texture(Gdx.files.internal("maps/frozen-olaf.jpg"));//"maps/base-map1.png"));
+	private Sprite sprite;// = new Sprite(tex);
 	public ActorMap(Map map){
 		this.map = map;
+		tex = new Texture(Gdx.files.internal(map.getBackgroundPath()));
+		sprite = new Sprite(tex);
 		sprite.setBounds(0, 0, map.getWidth(), map.getHeight());
 	}
 	

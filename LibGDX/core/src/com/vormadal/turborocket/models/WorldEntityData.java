@@ -23,6 +23,16 @@ public class WorldEntityData {
 		this.entity = map;
 	}
 	
+	public WorldEntityData(MapObject mapObject){
+		this.type = EntityType.MAP;
+		this.entity = mapObject;
+	}
+	
+	public WorldEntityData(Platform platform){
+		this.type = EntityType.PLATFORM;
+		this.entity = platform;
+	}
+	
 	public WorldEntity getEntity(){
 		return this.entity;
 	}

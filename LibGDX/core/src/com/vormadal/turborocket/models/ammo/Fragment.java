@@ -9,11 +9,11 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.vormadal.turborocket.WorldEntitiesController;
 import com.vormadal.turborocket.models.WorldEntityData;
 import com.vormadal.turborocket.models.actors.ActorFragment;
+import static com.vormadal.turborocket.utils.PropKeys.*;
 
 public class Fragment extends Ammo {
 
-	private static int FRAGMENTS_AMMO_COST = 1;
-	private float impFactor = 150;
+	private float impFactor = getFragmentImpulse();//150;
 	public Fragment(Vector2 initialVel, Vector2 pos, Vector2 dir, WorldEntitiesController entitiesController) {
 		super(initialVel, pos, dir, entitiesController);
 		
@@ -42,8 +42,8 @@ public class Fragment extends Ammo {
 		}
 		
 		@Override
-		public int getAmmoCost() {
-			return FRAGMENTS_AMMO_COST;
+		public float getAmmoCost() {
+			return getFragmentCost();
 		}
 		
 	}

@@ -1,5 +1,9 @@
 package com.vormadal.turborocket.models.ammo;
 
+import static com.vormadal.turborocket.utils.PropKeys.getBulletCost;
+import static com.vormadal.turborocket.utils.PropKeys.getBulletDensity;
+import static com.vormadal.turborocket.utils.PropKeys.getBulletSpeed;
+
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
@@ -10,12 +14,9 @@ import com.vormadal.turborocket.WorldEntitiesController;
 import com.vormadal.turborocket.models.WorldEntityData;
 import com.vormadal.turborocket.models.actors.ActorBullet;
 
-import static com.vormadal.turborocket.utils.ConfigUtil.*;
-import static com.vormadal.turborocket.utils.PropKeys.*;
-
 public class Bullet extends Ammo {
 
-	private static final float NORMAL_SHOT_SPEED = readFloat(BULLET_SPEED);
+	private static final float NORMAL_SHOT_SPEED = getBulletSpeed();
 	
 	/**
 	 * 
@@ -35,7 +36,7 @@ public class Bullet extends Ammo {
 		body = world.createBody(bodyDef);
 		PolygonShape shape = new PolygonShape();
 		shape.setAsBox(3f, 3f);
-	    body.createFixture(shape, readFloat(BULLET_DENSITY));
+	    body.createFixture(shape, getBulletDensity());
 	 // add first velocity of ship given by initialVel then normal shots speed with ship direction
 	    body.setLinearVelocity(v0);
 	    body.applyLinearImpulse(dir.scl(NORMAL_SHOT_SPEED), pos, true);
@@ -51,8 +52,8 @@ public class Bullet extends Ammo {
 		}
 		
 		@Override
-		public int getAmmoCost() {
-			return readInt(BULLET_COST);
+		public float getAmmoCost() {
+			return getBulletCost();
 		}
 	}
 }

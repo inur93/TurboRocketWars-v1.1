@@ -6,11 +6,15 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Properties;
+
+import com.vormadal.turborocket.models.Map;
 
 public class ConfigUtil {
 	
 	private static final String DEFAULT_PATH = "config.properties"; 
+	public static final String MAPS_PATH = "maps.properties";
 	private static String CONFIG_PATH = DEFAULT_PATH;
 	private static final HashMap<String, String> cache = new HashMap<>();
 	
@@ -147,7 +151,6 @@ public class ConfigUtil {
 	public static boolean readBoolean(String key){
 		String value = readProp(key);
 		return value != null ? Boolean.valueOf(value) : false;
-	}
-	
+	}	
 
 }

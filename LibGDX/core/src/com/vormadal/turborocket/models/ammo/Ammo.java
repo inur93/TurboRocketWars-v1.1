@@ -3,9 +3,7 @@ package com.vormadal.turborocket.models.ammo;
 import static com.vormadal.turborocket.utils.ConfigUtil.readDouble;
 import static com.vormadal.turborocket.utils.ConfigUtil.readInt;
 import static com.vormadal.turborocket.utils.ConfigUtil.readLong;
-import static com.vormadal.turborocket.utils.PropKeys.AMMO_COST;
-import static com.vormadal.turborocket.utils.PropKeys.AMMO_DMG;
-import static com.vormadal.turborocket.utils.PropKeys.AMMO_DURATION;
+import static com.vormadal.turborocket.utils.PropKeys.*;
 
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
@@ -20,13 +18,13 @@ public abstract class Ammo implements WorldEntity{
 	protected WorldEntitiesController entitiesController;
 	protected Body body;
 	protected Actor actor;
-	protected double damage = readDouble(AMMO_DMG); // default value
-	protected int ammoCost = readInt(AMMO_COST);
+	protected float damage = getAmmoDmg(); // default value
+	protected float ammoCost = getAmmoCost();
 	protected Vector2 v0;
 	protected Vector2 pos;
 	protected Vector2 dir;
 	protected long startTime; // ms
-	protected final long shotDuration = readLong(AMMO_DURATION); //ms
+	protected final long shotDuration = getAmmoDuration(); //ms
 	private int id;
 	public Ammo(Vector2 v0, Vector2 pos, Vector2 dir, WorldEntitiesController entitiesController) {
 		this.v0 = v0;

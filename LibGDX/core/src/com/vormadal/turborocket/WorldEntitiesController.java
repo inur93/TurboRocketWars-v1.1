@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 
 import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.vormadal.turborocket.models.WorldEntity;
 
@@ -60,7 +61,9 @@ public class WorldEntitiesController {
 			ListItem item = queue.pop();
 			if(item.create){
 				entities.add(item.entity);
-				stage.addActor(item.entity.create(world));
+				Actor actor = item.entity.create(world);
+				if(actor != null)
+					stage.addActor(actor);
 			}else{
 				entities.remove(item.entity);
 				item.entity.destroy(world);

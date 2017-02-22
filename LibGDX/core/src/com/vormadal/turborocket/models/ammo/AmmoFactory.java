@@ -6,5 +6,5 @@ import com.vormadal.turborocket.WorldEntitiesController;
 
 public interface AmmoFactory  <T extends Ammo>{
 	T factory(Vector2 initialVel, Vector2 pos, Vector2 dir, WorldEntitiesController entitiesController);
-	int getAmmoCost();
+	float getAmmoCost();
 }

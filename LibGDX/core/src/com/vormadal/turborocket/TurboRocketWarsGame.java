@@ -32,6 +32,7 @@ import com.vormadal.turborocket.models.ammo.Bullet;
 import com.vormadal.turborocket.models.ammo.Cannon;
 import com.vormadal.turborocket.models.ammo.Fragment;
 import com.vormadal.turborocket.models.ammo.SeekerMissile;
+import com.vormadal.turborocket.models.configs.MapConfig;
 import com.vormadal.turborocket.utils.InputConfiguration;
 import com.vormadal.turborocket.utils.InputConfiguration.InputType;
 import com.vormadal.turborocket.utils.PropKeys;
@@ -44,7 +45,7 @@ public class TurboRocketWarsGame extends ApplicationAdapter  {
 	
 	
 	//configs
-	public int statsBarHeight = readInt(STATS_BAR_HEIGHT);
+	public int statsBarHeight = getStatsBarHeight();
 	
 	
 	
@@ -82,14 +83,12 @@ public class TurboRocketWarsGame extends ApplicationAdapter  {
 		world.setContactListener(collisionController);
 //		stage.addActor(new ActorFragment(frag));
 		
-		new Map(entitiesController, 640*4, 480*4);
+		String[] mapPaths = getMapKeys();
+		MapConfig mapConfig = getMapConfig(mapPaths[0]);
+		Map map = new Map(entitiesController, mapConfig);
 //		Cannon<Bomb> bomb = new Cannon<Bomb>(entitiesController, new BombFactory(), 1, true,100);
-		Cannon<Bullet> bullets = new Cannon<Bullet>(entitiesController, new Bullet.NormalShotFactory(), 1, true, 100);
-		Cannon<SeekerMissile> seeker = new Cannon<SeekerMissile>(entitiesController, new SeekerMissile.SeekerFactory(), 3, true, 100);
-		
-		
-		Ship<?,?> ship1 = new Ship<>(entitiesController, new Vector2(50f,50f), bullets, bullets);
-		Ship<?,?> ship2 = new Ship<>(entitiesController, new Vector2(100f,50f), bullets, bullets);
+		Ship<?,?> ship1 = createDefaultShip(map.getSpawnPoints()[0]);
+		Ship<?,?> ship2 = createDefaultShip(map.getSpawnPoints()[1]);
 
 		players = new ArrayList<>();
 //		ScreenData[] data = ScreenUtil.getScreenData(2, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
@@ -130,6 +129,14 @@ public class TurboRocketWarsGame extends ApplicationAdapter  {
 		timer = new Timer();
 		timer.scheduleTask(inputManager, 0f, 1.0f/60f);
 		
+	}
+	
+	private Ship<?,?> createDefaultShip(Vector2 spawnPoint){
+		Cannon<Bullet> bullets = new Cannon<Bullet>(entitiesController, new Bullet.NormalShotFactory(), 1, true, 100);
+		Cannon<SeekerMissile> seeker = new Cannon<SeekerMissile>(entitiesController, new SeekerMissile.SeekerFactory(), 3, true, 100);
+		
+		
+		return new Ship<>(entitiesController, spawnPoint, bullets, seeker);
 	}
 
 	

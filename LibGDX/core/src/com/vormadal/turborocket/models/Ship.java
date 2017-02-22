@@ -21,28 +21,29 @@ import com.vormadal.turborocket.utils.B2Separator;
 import com.vormadal.turborocket.utils.PropKeys;
 
 public class Ship<A1 extends Ammo, A2 extends Ammo> implements WorldEntity{
+	private final float shipScale = getShipScale();
 	private Vector2[] shapeVectors = new Vector2[] { 
-			new Vector2(-7f, -5f).scl(readFloat(SHIP_SCALE)),
-			new Vector2(0f, 0f).scl(readFloat(SHIP_SCALE)),
-			new Vector2(7f, -5f).scl(readFloat(SHIP_SCALE)), 
-			new Vector2(0f, 9f).scl(readFloat(SHIP_SCALE)) };
+			new Vector2(-7f, -5f).scl(shipScale),
+			new Vector2(0f, 0f).scl(shipScale),
+			new Vector2(7f, -5f).scl(shipScale), 
+			new Vector2(0f, 9f).scl(shipScale) };
 	
 	
 	private WorldEntitiesController entitiesController;
 
-	private Vector2 boostVec = new Vector2(0, readFloat(SHIP_BOOST_IMPULSE));
+	private Vector2 boostVec = new Vector2(0, getShipBoostImpulse());
 
-	private int lives = readInt(SHIP_LIVES);
-	private final float maxHitPoints = readFloat(SHIP_MAX_HP);
+	private int lives = getShipLives();
+	private final float maxHitPoints = getShipMaxHp();
 	private float hitPoints = maxHitPoints;
 
 	private String id;
 	private String type;
 	private volatile Body body;
 	private volatile ActorShip actor;
-	private float regenHP = readFloat(SHIP_REGEN_HP);
-	private int regenAmmo = readInt(SHIP_REGEN_AMMO);
-	private final float rotationSpeed = readFloat(SHIP_ROTATION_SPEED);
+	private float regenHP = getShipRegenHp();
+	private float regenAmmo = getShipRegenAmmo();
+	private static final float rotationSpeed = getShipRotationSpeed();
 	
 	private Cannon<A1> cannonStd;
 	private Cannon<A2> cannon1;
@@ -53,8 +54,8 @@ public class Ship<A1 extends Ammo, A2 extends Ammo> implements WorldEntity{
 	private boolean isDestroyed = true; 
 	private Vector2 spawnPoint;
 
-	private long hpRegenFrequence = readLong(SHIP_HP_REGEN_FREQUENCY); // msec until next regen
-	private long ammoRegenFrequence = readLong(SHIP_AMMO_REGEN_FREQUENCY);
+	private long hpRegenFrequence = getShipHpRegenFrequency(); // msec until next regen
+	private long ammoRegenFrequence = getShipAmmoRegenFrequency();
 
 	private HPRegenTask hpRegenerator = null;
 	private AmmoRegenTask ammoRegen = null;
@@ -77,7 +78,7 @@ public class Ship<A1 extends Ammo, A2 extends Ammo> implements WorldEntity{
 	public synchronized Actor create(World world) {
 		if(!isDestroyed()) return null;
 		
-		System.out.println("create: " + this.id);
+		System.out.println("create ship: " + this.id);
 		
 		BodyDef bodyDef = new BodyDef();
 		bodyDef.type = BodyType.DynamicBody;
@@ -86,7 +87,7 @@ public class Ship<A1 extends Ammo, A2 extends Ammo> implements WorldEntity{
 		body = world.createBody(bodyDef);
 
 		FixtureDef fixtureDef = new FixtureDef();
-		fixtureDef.density = 1/readFloat(SHIP_SCALE);
+		fixtureDef.density = getShipDensity();
 		fixtureDef.friction = 0.3f;
 
 		B2Separator.seperate(body, fixtureDef, shapeVectors, 1);
@@ -97,7 +98,7 @@ public class Ship<A1 extends Ammo, A2 extends Ammo> implements WorldEntity{
 	
 	public synchronized Actor destroy(World world){
 		if(isDestroyed()) return null;
-		System.out.println("destroy: " + id);
+		System.out.println("destroy ship: " + id);
 		
 		world.destroyBody(body);
 		isDestroyed = true;
@@ -149,6 +150,7 @@ public class Ship<A1 extends Ammo, A2 extends Ammo> implements WorldEntity{
 		boolean success = cannonStd.fire(this.getBody().getPosition().cpy(), 
 					this.getBody().getLinearVelocity().cpy(), 
 					this.getBody().getAngle());
+		System.out.println("fire success: " + success);
 		
 	}
 

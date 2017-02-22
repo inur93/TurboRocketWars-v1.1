@@ -13,7 +13,7 @@ import com.vormadal.turborocket.utils.ActorUtil;
 public class ActorShip extends Actor {
 
 	private Ship<?,?> ship;
-	private Texture tex = new Texture(Gdx.files.internal("ships/ship-blue.png"));
+	private Texture tex = new Texture(Gdx.files.internal("ships/ship-elsa.png"));
 //	private Texture verTex = new Texture(Gdx.files.internal("axis-vertical.png"));
 //	private Texture horTex = new Texture(Gdx.files.internal("axis-horizontal.png"));
 	
@@ -21,13 +21,12 @@ public class ActorShip extends Actor {
 	private boolean initialized = false;
 //	private Sprite ver = new Sprite(verTex);
 //	private Sprite hor = new Sprite(horTex);
-//	private ArrayList<Vector2> shipPoints = new ArrayList<>();
-	//test
-//	private BitmapFont font = new BitmapFont();
+	
 	public ActorShip(Ship<?, ?> ship){
 		this.ship = ship;
 	}
 
+	
 	@Override
 	public void draw(Batch batch, float parentAlpha) {
 		Body body = ship.getBody();
@@ -35,11 +34,12 @@ public class ActorShip extends Actor {
 		if(!initialized){
 			Vector2 bounds = ActorUtil.getSize(body);
 			sprite.setBounds(0, 0, bounds.x, bounds.y);
+			sprite.setOrigin(bounds.x/2, bounds.y/2);
 			initialized = true;
 		}
 		Vector2 pos = body.getPosition();
 
-
+//		ship.getBody().getPosition()
 		sprite.setRotation(ship.getBody().getAngle()*MathUtils.radiansToDegrees);
 		
 		batch.draw(sprite, pos.x-sprite.getWidth()/2, pos.y-sprite.getHeight()/2, 
