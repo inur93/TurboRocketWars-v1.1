@@ -77,7 +77,7 @@ public class Cannon<T extends Ammo> {
 			ammoFactory.factory(v0, pos, dir.cpy().scl(cannonDirection), entitiesController);
 
 		}
-		System.out.println("ammo left: " + ammo);
+//		System.out.println("ammo left: " + ammo);
 		return true;
 	}
 	

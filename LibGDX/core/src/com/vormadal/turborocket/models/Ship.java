@@ -150,7 +150,7 @@ public class Ship<A1 extends Ammo, A2 extends Ammo> implements WorldEntity{
 		boolean success = cannonStd.fire(this.getBody().getPosition().cpy(), 
 					this.getBody().getLinearVelocity().cpy(), 
 					this.getBody().getAngle());
-		System.out.println("fire success: " + success);
+//		System.out.println("fire success: " + success);
 		
 	}
 
@@ -258,7 +258,14 @@ public class Ship<A1 extends Ammo, A2 extends Ammo> implements WorldEntity{
 		respawn();
 	}
 
+	//this helps if you keep rotating after death or if more than one collision is detected that kills ship
+	private long lastDeath = 0;
 	public void die() {
+		long time = System.currentTimeMillis();
+		if(time - lastDeath < 500){
+			return;
+		}
+		lastDeath = time;
 		this.lives -= 1;
 		if (this.lives <= 0) {
 			this.lives = 0;

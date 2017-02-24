@@ -95,6 +95,11 @@ public class CollisionController implements ContactListener{
 			ship.die();
 		}
 	}
+	
+	private void ship2PlatformEnd(Ship<?, ?> ship, Platform platform) {
+		ship.stopAmmoRegen();
+		ship.stopHPRegen();
+	}
 
 	private void ship2Map(Ship<?, ?> entity) {
 		entity.die();
@@ -113,7 +118,7 @@ public class CollisionController implements ContactListener{
 		case PLATFORM:
 			switch(typeB){
 			case SHIP:
-				ship2Platform((Ship<?,?>) dataB.getEntity(), (Platform) dataA.getEntity());
+				ship2PlatformEnd((Ship<?,?>) dataB.getEntity(), (Platform) dataA.getEntity());
 				break;
 			default:
 				System.out.println("dont care");
@@ -122,7 +127,7 @@ public class CollisionController implements ContactListener{
 		case SHIP:
 			switch(typeB){
 			case PLATFORM:
-				ship2Platform((Ship<?,?>) dataA.getEntity(), (Platform) dataB.getEntity());
+				ship2PlatformEnd((Ship<?,?>) dataA.getEntity(), (Platform) dataB.getEntity());
 				break;
 			default:
 				System.out.println("dont care");

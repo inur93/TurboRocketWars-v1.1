@@ -164,15 +164,15 @@ public class TurboRocketWarsGame extends ApplicationAdapter  {
 			
 	        stage.getViewport().setScreenX((int) (Gdx.graphics.getWidth()*p.getScreenX()));
 	        stage.getViewport().setScreenWidth((int) (Gdx.graphics.getWidth()*p.getWidth()));
-	        stage.getViewport().setScreenHeight(Gdx.graphics.getHeight()-50);
+	        stage.getViewport().setScreenHeight(Gdx.graphics.getHeight()-statsBarHeight);
 	        stage.getViewport().apply();
 			stage.draw();
 			
 			
+			statsStage.getViewport().setScreenX(0);
 			statsStage.getViewport().setScreenY(Gdx.graphics.getHeight()-statsBarHeight);
 			statsStage.getViewport().setScreenWidth(Gdx.graphics.getWidth());
-			statsStage.getViewport().setScreenX(0);
-			statsStage.getViewport().setScreenHeight(50);
+			statsStage.getViewport().setScreenHeight(statsBarHeight);
 			statsStage.getViewport().apply();
 			statsStage.draw();
 			
