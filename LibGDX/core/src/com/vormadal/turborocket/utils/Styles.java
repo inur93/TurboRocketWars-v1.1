@@ -5,13 +5,19 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Slider.SliderStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
+import com.badlogic.gdx.scenes.scene2d.ui.TextField;
+import com.badlogic.gdx.scenes.scene2d.ui.TextField.TextFieldStyle;
 
 public class Styles {
 
 	private static Skin skin;
 	private static TextButtonStyle buttonStyle;
+	private static LabelStyle labelStyle;
+	private static TextFieldStyle textFieldStyle;
+	
 	private static void init(){
 		skin = new Skin();
 		
@@ -39,6 +45,16 @@ public class Styles {
 		sliderStyle.knob = skin.newDrawable(Const.SLIDER_KNOB, Color.LIGHT_GRAY);
 		
 		skin.add(Const.SLIDER_STYLE_DEFAULT, sliderStyle);
+		
+		labelStyle = new LabelStyle();
+		labelStyle.font = bfont;
+		labelStyle.fontColor = Color.YELLOW;
+		
+		textFieldStyle = new TextFieldStyle();
+		textFieldStyle.font = bfont;
+		textFieldStyle.fontColor = Color.YELLOW;
+		
+		
 	}
 
 	public static Skin getSkin(){
@@ -48,6 +64,16 @@ public class Styles {
 	public static TextButtonStyle getButtonStyle(){
 		if(skin == null) init();
 		return buttonStyle;
+	}
+	
+	public static TextFieldStyle getTextFieldStyle(){
+		if(skin == null) init();
+		return textFieldStyle;
+	}
+	
+	public static LabelStyle getLabelStyle(){
+		if(skin == null) init();
+		return labelStyle;
 	}
 
 	public class Const{

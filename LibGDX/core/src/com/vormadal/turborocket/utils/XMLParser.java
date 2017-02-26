@@ -138,7 +138,7 @@ public class XMLParser {
 	private static final String MIN_VALUE = "minValue";
 	private static final String MAX_VALUE = "maxValue";
 	private static final String REGEX = "regEx";
-	
+	private static final String EDITABLE = "editable";
 	
 	
 
@@ -151,8 +151,6 @@ public class XMLParser {
 			InputStream in = new FileInputStream(configFile);
 			XMLEventReader eventReader = inputFactory.createXMLEventReader(in);
 			// these will be created when the right element is reached in reader
-			PlatformConfig platformConfig = null;
-			MapObjectConfig mapObjectConfig = null;
 			Setting setting = null;
 
 			while (eventReader.hasNext()) {
@@ -184,6 +182,9 @@ public class XMLParser {
 								break;
 							case DESCRIPTION:
 								setting.description = value;
+								break;
+							case EDITABLE:
+								setting.editable = Boolean.valueOf(value);
 								break;
 							}
 						}

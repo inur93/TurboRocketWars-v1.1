@@ -49,6 +49,7 @@ public class Setting {
 	}
 	private int errors = 0;
 	private String errorMessage = "";
+	public boolean editable = true;
 
 	private void addError(String error){
 		this.errors++;
