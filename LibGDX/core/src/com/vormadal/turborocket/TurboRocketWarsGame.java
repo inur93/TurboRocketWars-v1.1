@@ -70,8 +70,11 @@ public class TurboRocketWarsGame extends ApplicationAdapter  {
     OrthographicCamera camera;
     BitmapFont font;
     BitmapFont fontTest;
+    
+    
 	@Override
 	public void create () {
+		
 		PropKeys.setDefault();
 		//viewport width should be determined by number of players playing on same screen.
 		//the width is the size of the world that should be visible, thus the viewport is smaller on splitscreen.
