@@ -1,9 +1,6 @@
 package com.vormadal.turborocket.models.ammo;
 
-import static com.vormadal.turborocket.utils.PropKeys.getBombCost;
-import static com.vormadal.turborocket.utils.PropKeys.getBombExplosionImpulse;
-import static com.vormadal.turborocket.utils.PropKeys.getBombNumberFragments;
-import static com.vormadal.turborocket.utils.PropKeys.getBombTimeToDetonate;
+import static com.vormadal.turborocket.utils.PropKeys.*;
 
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.BodyDef;
@@ -25,8 +22,8 @@ public class Bomb  extends Ammo{
 	private int numberFragments = getBombNumberFragments(); //10;//BombNumberFragments();
 	private Task task;
 	public Bomb(Vector2 initialVel, Vector2 pos, Vector2 dir, WorldEntitiesController entitiesController) {
-		super(initialVel, pos, dir, entitiesController);
-		this.damage = 10;//BombDamage();
+		super(initialVel, pos, dir, getBombDamage(), getBombCost(), getBombTimeToDetonate()+1000, entitiesController);
+		
 	}
 
 	@Override
@@ -37,7 +34,8 @@ public class Bomb  extends Ammo{
 		body = world.createBody(bodyDef);
 		PolygonShape shape = new PolygonShape();
 		
-		shape.setAsBox(0.4f, 0.4f);
+		float size = getBombSize();
+		shape.setAsBox(size, size);
 //		body.createFixture(shape, SHOT_DENSITY);
 		body.applyLinearImpulse(dir.scl(impFactor), pos, true);
 		task = new Task() {
@@ -49,7 +47,7 @@ public class Bomb  extends Ammo{
 //					com.badlogic.gdx.math.MathUtils.ma m = Mat22.createRotationalTransform((float) step*i);
 					float angle = (float)step*i;
 					Vector2 dir = new Vector2(0f,1f).rotateRad(angle);
-					Vector2 position = Bomb.this.pos.add(dir.cpy().scl(7f));
+					Vector2 position = Bomb.this.pos.add(dir.cpy());
 					new Fragment(new Vector2(), position, dir, entitiesController);
 				}
 				Bomb.this.entitiesController.destroyWhenReady(Bomb.this);

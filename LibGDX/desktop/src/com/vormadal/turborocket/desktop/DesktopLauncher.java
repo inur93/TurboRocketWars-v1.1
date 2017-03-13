@@ -4,8 +4,7 @@ import com.badlogic.gdx.Game;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 import com.vormadal.turborocket.TurboRocketWarsGame;
-
-import test.MenuScreen;
+import com.vormadal.turborocket.screens.MenuScreen;
 
 public class DesktopLauncher {
 	public static void main (String[] arg) {
@@ -14,13 +13,13 @@ public class DesktopLauncher {
 		config.width = config.width*2;
 		config.height = config.height*2;
 //		config.use
-//		new LwjglApplication(new TurboRocketWarsGame(), config);
-		new LwjglApplication(new Game() {
-			
-			@Override
-			public void create() {
-				setScreen(new MenuScreen(this));
-			}
-		}, config);
+		new LwjglApplication(new TurboRocketWarsGame(), config);
+//		new LwjglApplication(new Game() {
+//			
+//			@Override
+//			public void create() {
+//				setScreen(new MenuScreen(this));
+//			}
+//		}, config);
 	}
 }

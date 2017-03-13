@@ -15,7 +15,7 @@ public class Fragment extends Ammo {
 
 	private float impFactor = getFragmentImpulse();//150;
 	public Fragment(Vector2 initialVel, Vector2 pos, Vector2 dir, WorldEntitiesController entitiesController) {
-		super(initialVel, pos, dir, entitiesController);
+		super(initialVel, pos, dir, getFragmentDamage(), getFragmentCost(), getFragmentDuration(), entitiesController);
 		
 	}
 
@@ -26,8 +26,9 @@ public class Fragment extends Ammo {
 		bodyDef.position.set(pos);
 		body = world.createBody(bodyDef);
 		PolygonShape shape = new PolygonShape();
-		shape.setAsBox(10f, 15f);
-	    body.createFixture(shape, 10);
+		float size = getFragmentSize();
+		shape.setAsBox(size, size);
+	    body.createFixture(shape, getFragmentDensity());
 		body.applyLinearImpulse(dir.scl(impFactor), pos, true);
 		body.setUserData(new WorldEntityData(this));
 		return (this.actor = new ActorFragment(this));

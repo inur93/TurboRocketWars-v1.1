@@ -10,6 +10,9 @@ public class MapConfig {
 	public float width;
 	public float height;
 	public String backgroundPath;
+	public String name;
+	public String description;
+	
 	public List<PlatformConfig> platforms = new ArrayList<>();
 	public List<MapObjectConfig> mapObjects = new ArrayList<>();
 	

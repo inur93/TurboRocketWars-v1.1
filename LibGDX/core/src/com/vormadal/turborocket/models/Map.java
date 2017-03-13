@@ -23,8 +23,9 @@ public class Map implements WorldEntity{
 	private List<Platform> platforms = new ArrayList<>();
 	private List<MapObject> mapObjects = new ArrayList<>();
 	private Vector2[] spawnPoints;
-	
+	private MapConfig config;
 	public Map(WorldEntitiesController entityController, MapConfig config){
+		this.config = config;
 		this.width = config.width;
 		this.height = config.height;
 		this.backgroundPath = config.backgroundPath;
@@ -84,6 +85,10 @@ public class Map implements WorldEntity{
 	}
 	public String getBackgroundPath() {
 		return this.backgroundPath;
+	}
+	
+	public MapConfig getConfig(){
+		return this.config;
 	}
 
 }

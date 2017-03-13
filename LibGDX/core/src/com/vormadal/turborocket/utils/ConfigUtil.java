@@ -101,6 +101,7 @@ public class ConfigUtil {
 	
 	
 	private static String readProp(String key){
+		
 		String value = cache.get(key);
 		if(value != null) return value;
 		Properties prop = new Properties();

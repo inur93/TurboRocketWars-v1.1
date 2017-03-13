@@ -1,16 +1,18 @@
 package com.vormadal.turborocket.utils;
 
 import static com.vormadal.turborocket.utils.ConfigUtil.MAPS_PATH;
-import static com.vormadal.turborocket.utils.ConfigUtil.readBoolean;
-import static com.vormadal.turborocket.utils.ConfigUtil.readFloat;
-import static com.vormadal.turborocket.utils.ConfigUtil.readInt;
-import static com.vormadal.turborocket.utils.ConfigUtil.readLong;
 import static com.vormadal.turborocket.utils.ConfigUtil.readString;
 import static com.vormadal.turborocket.utils.ConfigUtil.resetConfigPath;
 import static com.vormadal.turborocket.utils.ConfigUtil.saveProp;
 import static com.vormadal.turborocket.utils.ConfigUtil.setConfigPath;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+
 import com.vormadal.turborocket.models.configs.MapConfig;
+
+import test.XMLReader;
 public class PropKeys {
 
 	private static int NEXT_ID = 0;
@@ -19,41 +21,51 @@ public class PropKeys {
 	}
 	
 	//screen configs
-	private static final String STATS_BAR_HEIGHT = "STATS_BAR_HEIGHT";
-	private static final String HP_BAR_LENGTH = "HP_BAR_SIZE";
-	private static final String HP_BAR_HEIGHT = "HP_BAR_HEIGHT";
-	private static final String STATS_BAR_X_OFFSET = "STATS_BAR_X_OFFSET";
-	private static final String STATS_BAR_Y_OFFSET = "STATS_BAR_Y_OFFSET";
+	private static final String STATS_BAR_HEIGHT = "STATS_BAR_HEIGHT";	//config
+	private static final String HP_BAR_LENGTH = "HP_BAR_SIZE";			//config
+	private static final String HP_BAR_HEIGHT = "HP_BAR_HEIGHT";		//config
+	private static final String STATS_BAR_X_OFFSET = "STATS_BAR_X_OFFSET";	//config
+	private static final String STATS_BAR_Y_OFFSET = "STATS_BAR_Y_OFFSET";	//config
 	
-	private static final String MAP_KEYS = "MAP_KEYS";
-	private static final String PLATFORM_FRICTION = "PLATFORM_FRICTION";
-	
-	// AMMO
-	private static final String AMMO_DMG = "AMMO_DMG";
-	private static final String AMMO_COST = "AMMO_COST";
-	private static final String AMMO_DURATION = "AMMO_DURATION";
-	
-	private static final String BULLET_COST = "BULLET_COST";
-	private static final String BULLET_SPEED = "BULLET_SPEED";
-	private static final String BULLET_DENSITY = "BULLET_DENSITY";
+	private static final String MAP_KEYS = "MAP_KEYS";						//config
+	private static final String PLATFORM_FRICTION = "PLATFORM_FRICTION";	//setting def=5
+		
+	private static final String BULLET_COST = "BULLET_COST";		//setting hidden
+	private static final String BULLET_DAMAGE = "BULLET_DAMAGE";	//setting hidden
+	private static final String BULLET_DURATION = "BULLET_DURATION";//setting hidden
+	private static final String BULLET_SPEED = "BULLET_SPEED";		//setting hidden
+	private static final String BULLET_DENSITY = "BULLET_DENSITY";	//setting hidden
+	private static final String BULLET_SIZE = "BULLET_SIZE";		//setting hidden
 	
 	private static final String BOMB_COST = "BOMB_COST";
+	private static final String BOMB_DAMAGE = "BOMB_DAMAGE";
 	private static final String BOMB_SPEED = "BOMB_SPEED";
 	private static final String BOMB_DENSITY = "BOMB_DENSITY";
 	private static final String BOMB_NUMBER_FRAGMENTS = "BOMB_NUMBER_FRAGMENTS";
 	private static final String BOMB_TIME_TO_DETONATE = "BOMB_TIME_TO_DETONATE";
 	private static final String BOMB_EXPLOSION_IMPULSE = "BOMB_EXPLOSION_IMPULSE";
+	private static final String BOMB_SIZE = "BOMB_SIZE";
 	
 	private static final String FRAGMENT_COST = "FRAGMENT_COST";
+	private static final String FRAGMENT_DAMAGE = "FRAGMENT_DAMAGE";
+	private static final String FRAGMENT_DURATION = "FRAGMENT_DURATION";
 	private static final String FRAGMENT_IMPULSE = "FRAGMENT_IMPULSE";
+	private static final String FRAGMENT_SIZE = "FRAGMENT_SIZE";
+	private static final String FRAGMENT_DENSITY = "FRAGMENT_DENSITY";
+	
 	
 	private static final String SEEKER_COST = "SEEKER_COST";
-	private static final String SEEKER_BEFORE_SEEKING = "SEEKER_BEFORE_SEEKING";
+	private static final String SEEKER_DAMAGE = "SEEKER_DAMAGE"; //done
+	private static final String SEEKER_DURATION = "SEEKER_DURATION"; //
+	private static final String SEEKER_SIZE = "SEEKER_SIZE"; //
+	private static final String SEEKER_SPEED = "SEEKER_SPEED"; //
+	private static final String SEEKER_DENSITY = "SEEKER_DENSITY"; //
+	private static final String SEEKER_INIT_SPEED = "SEEKER_INIT_SPEED"; //
+//	private static final String SEEKER_BEFORE_SEEKING = "SEEKER_BEFORE_SEEKING"; //
 	private static final String SEEKER_SUPER_SEEKER = "SEEKER_SUPER_SEEKER";
-	private static final String SEEKER_SPEED = "SEEKER_SPEED";
-	private static final String SEEKER_INIT_SPEED = "SEEKER_INIT_SPEED";
 	private static final String SEEKER_TIME_BEFORE_SEEK = "SEEKER_TIME_BEFORE_SEEK";
-	private static final String SEEKER_DENSITY = "SEEKER_DENSITY";
+	private static final String SEEKER_UPDATE_FREQUENCY = "SEEKER_UPDATE_FREQUENCY";	
+	private static final String SEEKER_CACHE_SHIPS = "SEEKER_CACHE_SHIPS";
 	
 	//SHIP
 	private static final String SHIP_LIVES = "SHIP_LIVES";
@@ -68,64 +80,46 @@ public class PropKeys {
 	private static final String SHIP_SCALE = "SHIP_SCALE";
 	private static final String SHIP_DENSITY = "SHIP_DENSITY";
 	
-	
+	private static HashMap<String, Setting> settingLookup = new HashMap<>();
 	
 	public static void setDefault(){
-		
+		List<Setting> settings = new XMLReader().loadSettings("default-settings.config");
+		for(Setting s : settings){
+			settingLookup.put(s.id, s);
+		}
 		saveProp(STATS_BAR_HEIGHT, 50);
 		saveProp(HP_BAR_LENGTH, 100);
 		saveProp(HP_BAR_HEIGHT, 10);
 		saveProp(STATS_BAR_X_OFFSET, 10);
 		saveProp(STATS_BAR_Y_OFFSET, 10);
-		saveProp(MAP_KEYS, "maps/map1.config");
-		saveProp(PLATFORM_FRICTION, 5);
-		
-		
-		saveProp(SHIP_LIVES, 5);
-		saveProp(SHIP_MAX_HP, 100);
-		saveProp(SHIP_REGEN_HP, 5);
-		saveProp(SHIP_REGEN_AMMO, 2);
-		saveProp(SHIP_MAX_AMMO, 50);
-		saveProp(SHIP_HP_REGEN_FREQUENCY, 200);
-		saveProp(SHIP_AMMO_REGEN_FREQUENCY, 200);
-		saveProp(SHIP_ROTATION_SPEED, 300);
-		saveProp(SHIP_BOOST_IMPULSE, 100);
-		saveProp(SHIP_SCALE, 1);
-		saveProp(SHIP_DENSITY, 1);
-		
-		//default ammo
-		saveProp(AMMO_COST, 2);
-		saveProp(AMMO_DMG, 2);
-		saveProp(AMMO_DURATION, 6000); //msec
-		
-		//bullet
-		saveProp(BULLET_COST, 1);
-		saveProp(BULLET_DENSITY, 0.2);
-		saveProp(BULLET_SPEED, 1600);
-		
-		//Bomb
-		saveProp(BOMB_COST, 5);
-		saveProp(BOMB_DENSITY, 2);
-		saveProp(BOMB_SPEED, 30);
-		saveProp(BOMB_EXPLOSION_IMPULSE, 20);
-		saveProp(BOMB_TIME_TO_DETONATE, 1000);
-		saveProp(BOMB_NUMBER_FRAGMENTS, 10);
-		
-		saveProp(FRAGMENT_COST, 0.1);
-		saveProp(FRAGMENT_IMPULSE, 500);
-		
-		//seeker
-		saveProp(SEEKER_COST, 3);
-		saveProp(SEEKER_DENSITY, 1);
-		saveProp(SEEKER_SPEED, 200);
-		saveProp(SEEKER_INIT_SPEED, 150);
-		saveProp(SEEKER_BEFORE_SEEKING, 2);
-		saveProp(SEEKER_TIME_BEFORE_SEEK, 2);
-		saveProp(SEEKER_SUPER_SEEKER, true);
+		saveProp(MAP_KEYS, "maps/map1.config;maps/map2.config");
 	}
-
-
-
+	
+	public static int readInt(String id){
+		Setting s = settingLookup.get(id);	
+		System.out.println("setting " + id + ": " + (s == null ? "null" : s.value));
+		if(s == null || !s.validate()) return 0;
+		return Integer.valueOf(s.value);
+	}
+	public static float readFloat(String id){
+		Setting s = settingLookup.get(id);		
+		System.out.println("setting " + id + ": " + (s == null ? "null" : s.value));
+		if(s == null || !s.validate()) return 0;
+		return Float.valueOf(s.value);
+	}
+	public static boolean readBoolean(String id){
+		Setting s = settingLookup.get(id);		
+		System.out.println("setting " + id + ": " + (s == null ? "null" : s.value));
+		if(s == null || !s.validate()) return false;
+		return Boolean.valueOf(s.value);
+	}
+	public static long readLong(String id){
+		Setting s = settingLookup.get(id);		
+		System.out.println("setting " + id + ": " + (s == null ? "null" : s.value));
+		if(s == null || !s.validate()) return 0;
+		return Long.valueOf(s.value);
+	}
+	
 	public static int getNEXT_ID() {
 		return NEXT_ID;
 	}
@@ -139,31 +133,31 @@ public class PropKeys {
 
 
 	public static int getStatsBarHeight() {
-		return readInt(STATS_BAR_HEIGHT);
+		return ConfigUtil.readInt(STATS_BAR_HEIGHT);
 	}
 
 
 
 	public static int getHpBarLength() {
-		return readInt(HP_BAR_LENGTH);
+		return ConfigUtil.readInt(HP_BAR_LENGTH);
 	}
 
 
 
 	public static int getHpBarHeight() {
-		return readInt(HP_BAR_HEIGHT);
+		return ConfigUtil.readInt(HP_BAR_HEIGHT);
 	}
 
 
 
 	public static int getStatsBarXOffset() {
-		return readInt(STATS_BAR_X_OFFSET);
+		return ConfigUtil.readInt(STATS_BAR_X_OFFSET);
 	}
 
 
 
 	public static int getStatsBarYOffset() {
-		return readInt(STATS_BAR_Y_OFFSET);
+		return ConfigUtil.readInt(STATS_BAR_Y_OFFSET);
 	}
 
 	public static String[] getMapKeys(){
@@ -175,7 +169,7 @@ public class PropKeys {
 	
 	public static MapConfig getMapConfig(String key){
 		setConfigPath(MAPS_PATH);
-		MapConfig config = new XMLParser().readMapConfig(key);
+		MapConfig config = new XMLReader().loadMap(key);//new XMLParser().readMapConfig(key);
 		resetConfigPath();
 		return config;
 	}
@@ -185,21 +179,21 @@ public class PropKeys {
 	}
 
 
-	public static float getAmmoDmg() {
-		return readFloat(AMMO_DMG);
-	}
-
-
-
-	public static float getAmmoCost() {
-		return readFloat(AMMO_COST);
-	}
-
-
-
-	public static int getAmmoDuration() {
-		return readInt(AMMO_DURATION);
-	}
+//	public static float getAmmoDmg() {
+//		return readFloat(AMMO_DMG);
+//	}
+//
+//
+//
+//	public static float getAmmoCost() {
+//		return readFloat(AMMO_COST);
+//	}
+//
+//
+//
+//	public static int getAmmoDuration() {
+//		return readInt(AMMO_DURATION);
+//	}
 
 
 
@@ -207,10 +201,21 @@ public class PropKeys {
 		return readFloat(BULLET_COST);
 	}
 
+	public static float getBulletDamage(){
+		return readFloat(BULLET_DAMAGE);
+	}
+	
+	public static long getBulletDuration(){
+		return readLong(BULLET_DURATION);
+	}
 
 
 	public static float getBulletSpeed() {
 		return readFloat(BULLET_SPEED);
+	}
+	
+	public static float getBulletSize(){
+		return readFloat(BULLET_SIZE);
 	}
 
 
@@ -219,13 +224,17 @@ public class PropKeys {
 		return readFloat(BULLET_DENSITY);
 	}
 
-
+	public static float getBombDamage(){
+		return readFloat(BOMB_DAMAGE);
+	}
 
 	public static float getBombCost() {
 		return readFloat(BOMB_COST);
 	}
 
-
+	public static float getBombSize(){
+		return readFloat(BOMB_SIZE);
+	}
 
 	public static float getBombSpeed() {
 		return readFloat(BOMB_SPEED);
@@ -253,22 +262,46 @@ public class PropKeys {
 		return readFloat(FRAGMENT_COST);
 	}
 	
+	public static float getFragmentDamage(){
+		return readFloat(FRAGMENT_DAMAGE);
+	}
+	
+	public static long getFragmentDuration(){
+		return readLong(FRAGMENT_DURATION);
+	}
+	
 	public static float getFragmentImpulse(){
 		return readFloat(FRAGMENT_IMPULSE);
 	}
 
+	public static float getFragmentDensity(){
+		return readFloat(FRAGMENT_DENSITY);
+	}
+	
+	public static float getFragmentSize(){
+		return readFloat(FRAGMENT_SIZE);
+	}
 
 	public static float getSeekerCost() {
 		return readFloat(SEEKER_COST);
 	}
 
+	public static float getSeekerDamage(){
+		return readFloat(SEEKER_DAMAGE);
+	}
+	
+	public static long getSeekerDuration(){
+		return readLong(SEEKER_DURATION);
+	}
 
 
-//	public static int getSeekerBeforeSeeking() {
-//		return SEEKER_BEFORE_SEEKING;
-//	}
+	public static float getSeekerUpdateFrequency() {
+		return readFloat(SEEKER_UPDATE_FREQUENCY);
+	}
 
-
+	public static boolean getSeekerCacheShips(){
+		return readBoolean(SEEKER_CACHE_SHIPS);
+	}
 
 	public static boolean getSeekerSuperSeeker() {
 		return readBoolean(SEEKER_SUPER_SEEKER);
@@ -296,6 +329,10 @@ public class PropKeys {
 
 	public static float getSeekerDensity() {
 		return readFloat(SEEKER_DENSITY);
+	}
+	
+	public static float getSeekerSize(){
+		return readFloat(SEEKER_SIZE);
 	}
 
 

@@ -13,6 +13,9 @@ import com.vormadal.turborocket.models.configs.MapConfig;
 import com.vormadal.turborocket.models.configs.PlatformConfig;
 import static com.vormadal.turborocket.utils.PropKeys.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Platform implements WorldEntity{
 
 	
@@ -42,6 +45,14 @@ public class Platform implements WorldEntity{
 	public Actor destroy(World world) {
 		world.destroyBody(this.body);
 		return null;
+	}
+	
+	public List<Vector2> getVertices(){
+		List<Vector2> list = new ArrayList<>();
+		list.add(this.config.pointA);
+		list.add(this.config.pointB);
+		
+		return list;
 	}
 
 	

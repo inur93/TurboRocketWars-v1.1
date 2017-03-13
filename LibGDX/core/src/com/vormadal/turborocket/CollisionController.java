@@ -1,5 +1,8 @@
 package com.vormadal.turborocket;
 
+import java.util.List;
+
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Contact;
 import com.badlogic.gdx.physics.box2d.ContactImpulse;
 import com.badlogic.gdx.physics.box2d.ContactListener;
@@ -22,7 +25,7 @@ public class CollisionController implements ContactListener{
 		EntityType typeB = dataB.getType();
 		//		
 		System.out.println("collision: " + typeA + "<->" + typeB);
-
+		
 		switch(typeA){
 		case AMMO:
 			switch(typeB){
@@ -59,7 +62,7 @@ public class CollisionController implements ContactListener{
 			case PLATFORM:
 				break;
 			case SHIP:
-				ship2Platform((Ship<?,?>) dataB.getEntity(), (Platform) dataA.getEntity());
+				ship2Platform((Ship<?,?>) dataB.getEntity(), (Platform) dataA.getEntity(), contact);
 				break;
 			}
 			break;
@@ -72,7 +75,7 @@ public class CollisionController implements ContactListener{
 				ship2Map((Ship<?, ?>) dataA.getEntity());
 				break;
 			case PLATFORM:
-				ship2Platform((Ship<?,?>) dataA.getEntity(), (Platform) dataB.getEntity());
+				ship2Platform((Ship<?,?>) dataA.getEntity(), (Platform) dataB.getEntity(), contact);
 				break;
 			case SHIP:
 				ship2Ship((Ship<?, ?>) dataA.getEntity(), (Ship<?, ?>) dataB.getEntity());
@@ -83,12 +86,34 @@ public class CollisionController implements ContactListener{
 
 	}
 
-	private void ship2Platform(Ship<?, ?> ship, Platform platform) {
+	private void ship2Platform(Ship<?, ?> ship, Platform platform, Contact contact) {
 		double tol = 10; //degrees
+		
+//		boolean valid = false;
+//		Vector2 onLine = null;
+//		System.out.println("");
+//		List<Vector2> vertices = platform.getVertices();
+//		System.out.println("################################");
+//		for(int i = 0; i < vertices.size(); i++){
+//			Vector2 v0 = vertices.get(i);
+//			Vector2 v1 = vertices.get((i+1)%vertices.size());
+//			Vector2 v = v0.sub(v1);
+//			System.out.println("contact point: " + ship.getBody().getPosition());
+//			
+//			for(Vector2 p : contact.getWorldManifold().getPoints()){
+//				if(v.isOnLine(p)){
+//					System.out.println("is on line (vONp): v=" + v + "; p=" + p);
+//				}
+//				if(p.isOnLine(v)){
+//					System.out.println("is on line (pONv): v=" + v + "; p=" + p);
+//				}
+//			}
+//		}
+//		System.out.println("################################");
 		// get an angle between 0 and 360 degrees. 
 		double angle = Math.abs(Math.toDegrees(Math.abs(ship.getBody().getAngle()%(Math.PI*2))));
 		System.out.println("angle: " + angle);
-		if(angle <= tol || angle > 360-5){
+		if(angle <= tol || angle > 360-tol){
 			ship.regenerateAmmo();
 			ship.regenerateHP();
 		}else{

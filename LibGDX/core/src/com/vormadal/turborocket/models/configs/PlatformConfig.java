@@ -9,8 +9,8 @@ public class PlatformConfig {
 	
 	public String toString(){
 		return "\t\tPlatform[\n"
-				+ "\t\t" + pointA.toString() + "\n"
-				+ "\t\t" + pointB.toString() + "\n"
+				+ "\t\t" + (pointA == null ? new Vector2().toString() : pointA.toString()) + "\n"
+				+ "\t\t" + (pointB == null ? new Vector2().toString() : pointB.toString()) + "\n"
 				+ "\t\t]\n";
 	}
 }

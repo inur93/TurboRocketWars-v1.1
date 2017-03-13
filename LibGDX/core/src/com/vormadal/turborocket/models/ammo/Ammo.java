@@ -1,10 +1,5 @@
 package com.vormadal.turborocket.models.ammo;
 
-import static com.vormadal.turborocket.utils.ConfigUtil.readDouble;
-import static com.vormadal.turborocket.utils.ConfigUtil.readInt;
-import static com.vormadal.turborocket.utils.ConfigUtil.readLong;
-import static com.vormadal.turborocket.utils.PropKeys.*;
-
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.World;
@@ -18,19 +13,26 @@ public abstract class Ammo implements WorldEntity{
 	protected WorldEntitiesController entitiesController;
 	protected Body body;
 	protected Actor actor;
-	protected float damage = getAmmoDmg(); // default value
-	protected float ammoCost = getAmmoCost();
+	
+	protected float damage;
+	protected float ammoCost;
+	protected final long shotDuration; //ms
+	
 	protected Vector2 v0;
 	protected Vector2 pos;
 	protected Vector2 dir;
 	protected long startTime; // ms
-	protected final long shotDuration = getAmmoDuration(); //ms
-	private int id;
-	public Ammo(Vector2 v0, Vector2 pos, Vector2 dir, WorldEntitiesController entitiesController) {
+	
+	private int id; //for test
+	
+	public Ammo(Vector2 v0, Vector2 pos, Vector2 dir, float damage, float cost, long duration, WorldEntitiesController entitiesController) {
 		this.v0 = v0;
 		this.pos = pos;
 		this.dir = dir.cpy();
 		this.dir.nor();
+		this.damage = damage;
+		this.ammoCost = cost;
+		this.shotDuration = duration;
 		this.id = PropKeys.nextId();
 		this.entitiesController = entitiesController;	
 		this.startTime = System.currentTimeMillis();
@@ -59,7 +61,6 @@ public abstract class Ammo implements WorldEntity{
 	 * removes body from world and from controller shots list
 	 */
 	public Actor destroy(World world){
-		System.out.println("destroy: " + id);
 		if(body == null) return null;
 		this.actor.remove();
 		world.destroyBody(getBody());

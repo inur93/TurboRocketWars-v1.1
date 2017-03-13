@@ -2,8 +2,9 @@ package com.vormadal.turborocket.models;
 
 import com.badlogic.gdx.math.Vector2;
 import com.vormadal.turborocket.utils.InputConfiguration;
+import com.vormadal.turborocket.utils.InputListener;
 
-public class Player {
+public class Player implements InputListener{
 
 	private Ship<?,?> ship;
 	private InputConfiguration config;
@@ -75,4 +76,52 @@ public class Player {
 	public void setPosOffset(float posOffset) {
 		this.posOffset = posOffset;
 	}
+
+	@Override
+	public InputConfiguration getInputConfiguration() {
+		return this.config;
+	}
+
+	@Override
+	public void setInputConfiguration(InputConfiguration config) {
+		this.config = config;
+	}
+
+	@Override
+	public void left() {
+		this.ship.left();
+	}
+
+	@Override
+	public void right() {
+		this.ship.right();
+	}
+
+	@Override
+	public void boost() {
+		this.ship.boost();
+	}
+
+	@Override
+	public void shootNormal() {
+		this.ship.shootNormal();
+	}
+
+	@Override
+	public void shootSpecial() {
+		this.ship.shootSpecial();
+	}
+
+	@Override
+	public void leftRightReleased() {
+		this.ship.stopRotation();
+	}
+
+	@Override
+	public void esc() {
+		//TODO open menu maybe - at the moment intended for pausing game
+	}
+
+	@Override
+	public void enter() {}
 }

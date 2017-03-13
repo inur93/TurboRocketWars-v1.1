@@ -66,18 +66,17 @@ public class Cannon<T extends Ammo> {
 	public synchronized boolean fire(Vector2 p0, Vector2 v0, float angle) {
 		if (!isLoaded())
 			return false;
-		if (!hasAmmo())
-			return false;
+		
 		Vector2 dir = new Vector2(0, 1).rotateRad(angle);
 
 		for (int i = 0; i < cannonPos.length; i++) {
+			if (!hasAmmo())
+				return false;
 			Vector2 pos = p0.cpy().add(cannonPos[i].cpy().rotateRad(angle));
-//			System.out.println("dir: " + dir + "; cannondir: " + cannonDirection);
 			ammo -= ammoFactory.getAmmoCost();
 			ammoFactory.factory(v0, pos, dir.cpy().scl(cannonDirection), entitiesController);
 
 		}
-//		System.out.println("ammo left: " + ammo);
 		return true;
 	}
 	
@@ -96,7 +95,7 @@ public class Cannon<T extends Ammo> {
 	}
 
 	private boolean hasAmmo() {
-		return this.ammoFactory.getAmmoCost()*this.cannonPos.length <= this.ammo;
+		return this.ammoFactory.getAmmoCost() <= this.ammo;
 	}
 
 	private boolean isLoaded() {

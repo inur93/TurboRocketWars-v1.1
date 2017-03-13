@@ -1,11 +1,16 @@
 package com.vormadal.turborocket.models.ammo;
 
+import static com.vormadal.turborocket.utils.PropKeys.getSeekerCacheShips;
 import static com.vormadal.turborocket.utils.PropKeys.getSeekerCost;
+import static com.vormadal.turborocket.utils.PropKeys.getSeekerDamage;
 import static com.vormadal.turborocket.utils.PropKeys.getSeekerDensity;
+import static com.vormadal.turborocket.utils.PropKeys.getSeekerDuration;
 import static com.vormadal.turborocket.utils.PropKeys.getSeekerInitSpeed;
+import static com.vormadal.turborocket.utils.PropKeys.getSeekerSize;
 import static com.vormadal.turborocket.utils.PropKeys.getSeekerSpeed;
 import static com.vormadal.turborocket.utils.PropKeys.getSeekerSuperSeeker;
 import static com.vormadal.turborocket.utils.PropKeys.getSeekerTimeBeforeSeek;
+import static com.vormadal.turborocket.utils.PropKeys.getSeekerUpdateFrequency;
 
 import java.util.ArrayList;
 
@@ -24,16 +29,16 @@ import com.vormadal.turborocket.models.actors.ActorSeekerMissile;
 
 public class SeekerMissile extends Ammo {
 
-	private static final float seekerSpeed = getSeekerSpeed();
-	private static final float initialSpeed = getSeekerInitSpeed();
-	private static final long timeBeforeSeeking = getSeekerTimeBeforeSeek(); // msec
-	private static final boolean superSeekerOn = getSeekerSuperSeeker();
-	private static float seekerUpdateFrequency = 0.2f;
-	private boolean cacheShips = true;
+	private final float seekerSpeed = getSeekerSpeed();
+	private final float initialSpeed = getSeekerInitSpeed();
+	private final long timeBeforeSeeking = getSeekerTimeBeforeSeek(); // msec
+	private final boolean superSeekerOn = getSeekerSuperSeeker();
+	private float seekerUpdateFrequency = getSeekerUpdateFrequency(); //sec
+	private boolean cacheShips = getSeekerCacheShips();
 	private Task seekerTask;
 
 	public SeekerMissile(Vector2 initialVel, Vector2 pos, Vector2 dir, WorldEntitiesController entitiesController) {
-		super(initialVel, pos, dir, entitiesController);
+		super(initialVel, pos, dir, getSeekerDamage(), getSeekerCost(), getSeekerDuration(), entitiesController);
 	}
 
 	@Override
@@ -43,11 +48,11 @@ public class SeekerMissile extends Ammo {
 		bodyDef.position.set(pos);
 		body = world.createBody(bodyDef);
 		PolygonShape shape = new PolygonShape();
-		shape.setAsBox(0.4f, 0.4f);
+		float size = getSeekerSize();
+		shape.setAsBox(size, size);
 		body.createFixture(shape, getSeekerDensity());
 		shape.dispose();
 		body.applyLinearImpulse(dir.scl(initialSpeed), pos, true);
-		//		body.setUserData(new UserDataProp(USER_DATA_SHOT, Color.WHITE, 1, true, this));
 
 		seekerTask = new Task() {
 			@SuppressWarnings("rawtypes")
@@ -61,7 +66,7 @@ public class SeekerMissile extends Ammo {
 				float shortest = 0;
 				Ship<?,?> target = null;
 				for(Ship<?,?> s : ships){
-					float curLength = pos.sub(s.getBody().getPosition()).len();
+					float curLength = getBody().getPosition().sub(s.getBody().getPosition()).len();
 					if(target == null || curLength < shortest){
 						target = s;
 						shortest = curLength;
@@ -71,11 +76,11 @@ public class SeekerMissile extends Ammo {
 
 				Vector2 direction = target.getBody().getPosition().sub(getBody().getPosition());
 				direction.nor();
-				Vector2 directedSpeed = direction.scl(seekerSpeed*10);
+				Vector2 directedSpeed = direction.scl(seekerSpeed);
 				Vector2 targetSpeed = target.getBody().getLinearVelocity();
 
 				if(superSeekerOn)getBody().setLinearVelocity(directedSpeed.add(targetSpeed));
-				else getBody().applyForceToCenter(directedSpeed.add(targetSpeed).scl(50), true);
+				else getBody().applyForceToCenter(directedSpeed.add(targetSpeed), true);
 
 				// cancels the task when lifetime of ammo is out. and then destroy the Box2d body
 				if(System.currentTimeMillis() - startTime < shotDuration){

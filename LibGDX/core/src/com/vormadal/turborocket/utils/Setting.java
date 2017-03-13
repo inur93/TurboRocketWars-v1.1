@@ -5,6 +5,7 @@ public class Setting {
 	public enum SettingType {TEXT_FIELD, SLIDER, TOGGLE};
 	public enum ValueType {STRING, INT, FLOAT, BOOLEAN};
 
+	public String id;
 	public String name;
 	public String value;
 
@@ -13,6 +14,16 @@ public class Setting {
 	public String description;
 	public SettingValidation validation = new SettingValidation();
 
+	public boolean isValid(String value){
+		String curValue = this.value;
+		this.value = value;
+		boolean valid = validate();
+		errorMessage = "";
+		errors = 0;
+		this.value = curValue;
+		return valid;
+	}
+	
 	public boolean validate(){
 		switch (valueType) {
 		case BOOLEAN:

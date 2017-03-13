@@ -59,6 +59,7 @@ public class WorldEntitiesController {
 
 		while (!queue.isEmpty() && !isLocked) {
 			ListItem item = queue.pop();
+			System.out.println("item: " + item.entity);
 			if(item.create){
 				entities.add(item.entity);
 				Actor actor = item.entity.create(world);
@@ -68,6 +69,7 @@ public class WorldEntitiesController {
 				entities.remove(item.entity);
 				item.entity.destroy(world);
 			}
+			System.out.println("item created/deleted");
 		}
 
 	}
