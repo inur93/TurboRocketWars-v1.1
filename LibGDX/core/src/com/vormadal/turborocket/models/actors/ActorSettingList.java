@@ -9,7 +9,7 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Container;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
-import com.vormadal.turborocket.utils.Setting;
+import com.vormadal.turborocket.configurations.Setting;
 
 public class ActorSettingList extends Actor {
 	

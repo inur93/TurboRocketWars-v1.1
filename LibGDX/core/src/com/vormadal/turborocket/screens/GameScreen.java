@@ -1,8 +1,6 @@
 package com.vormadal.turborocket.screens;
 
-import static com.vormadal.turborocket.utils.PropKeys.getMapConfig;
-import static com.vormadal.turborocket.utils.PropKeys.getMapKeys;
-import static com.vormadal.turborocket.utils.PropKeys.getStatsBarHeight;
+import static com.vormadal.turborocket.configurations.PropKeys.getStatsBarHeight;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,13 +19,13 @@ import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.viewport.FillViewport;
 import com.badlogic.gdx.utils.viewport.FitViewport;
-import com.vormadal.turborocket.CollisionController;
-import com.vormadal.turborocket.InputManager;
-import com.vormadal.turborocket.InputManager.INPUT_MODE;
-import com.vormadal.turborocket.WorldEntitiesController;
+import com.vormadal.turborocket.configurations.PropKeys;
+import com.vormadal.turborocket.controllers.CollisionController;
+import com.vormadal.turborocket.controllers.InputManager;
+import com.vormadal.turborocket.controllers.InputManager.INPUT_MODE;
+import com.vormadal.turborocket.controllers.WorldEntitiesController;
 import com.vormadal.turborocket.models.Map;
 import com.vormadal.turborocket.models.Player;
 import com.vormadal.turborocket.models.Ship;
@@ -38,7 +36,6 @@ import com.vormadal.turborocket.models.ammo.Fragment;
 import com.vormadal.turborocket.models.ammo.SeekerMissile;
 import com.vormadal.turborocket.models.configs.MapConfig;
 import com.vormadal.turborocket.utils.InputConfiguration;
-import com.vormadal.turborocket.utils.PropKeys;
 import com.vormadal.turborocket.utils.InputConfiguration.InputType;
 import com.vormadal.turborocket.utils.InputListener;
 
@@ -46,7 +43,7 @@ public class GameScreen implements Screen {
 	//configs
 		public int statsBarHeight = getStatsBarHeight();
 		
-		
+		private MapConfig mapConfig;
 		
 		private WorldEntitiesController entitiesController;
 		private CollisionController collisionController;
@@ -71,6 +68,7 @@ public class GameScreen implements Screen {
 	    BitmapFont fontTest;
 	    
 	    public GameScreen(Game game, MapConfig map, int numPlayers){
+	    	this.mapConfig = map;
 	    	create();
 	    }
 	    
@@ -87,8 +85,7 @@ public class GameScreen implements Screen {
 			world.setContactListener(collisionController);
 //			stage.addActor(new ActorFragment(frag));
 			
-			String[] mapPaths = getMapKeys();
-			MapConfig mapConfig = getMapConfig(mapPaths[0]);
+			
 			Map map = new Map(entitiesController, mapConfig);
 //			Cannon<Bomb> bomb = new Cannon<Bomb>(entitiesController, new BombFactory(), 1, true,100);
 			Ship<?,?> ship1 = createDefaultShip(map.getSpawnPoints()[0]);
@@ -121,7 +118,7 @@ public class GameScreen implements Screen {
 			
 			
 			inputManager = new InputManager(listeners, INPUT_MODE.GAME);
-			Gdx.input.setInputProcessor(inputManager);
+			
 			
 		
 			
@@ -193,8 +190,7 @@ public class GameScreen implements Screen {
 
 		@Override
 		public void show() {
-			// TODO Auto-generated method stub
-			
+			Gdx.input.setInputProcessor(inputManager);
 		}
 
 

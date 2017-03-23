@@ -1,6 +1,6 @@
 package com.vormadal.turborocket.models.ammo;
 
-import static com.vormadal.turborocket.utils.PropKeys.*;
+import static com.vormadal.turborocket.configurations.PropKeys.*;
 
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.BodyDef;
@@ -8,7 +8,7 @@ import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.vormadal.turborocket.WorldEntitiesController;
+import com.vormadal.turborocket.controllers.WorldEntitiesController;
 import com.vormadal.turborocket.models.WorldEntityData;
 import com.vormadal.turborocket.models.actors.ActorBullet;
 

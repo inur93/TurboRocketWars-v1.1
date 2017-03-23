@@ -1,11 +1,12 @@
+import static com.vormadal.turborocket.configurations.ConfigUtil.*;
+
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.badlogic.gdx.graphics.g3d.particles.batches.BillboardParticleBatch.Config;
-import com.vormadal.turborocket.utils.ConfigUtil;
-import static com.vormadal.turborocket.utils.ConfigUtil.*;
+import com.vormadal.turborocket.configurations.ConfigUtil;
 public class TestConfigUtil {
 
 	private static final int prop1 = 10;
@@ -15,7 +16,7 @@ public class TestConfigUtil {
 	
 	@BeforeClass
 	public static void init(){
-		setConfigPath("test.properties");
+		setPath("test.properties");
 		saveProp("key1", prop1);
 		saveProp("key2", prop2);
 		saveProp("key3", prop3);
@@ -50,7 +51,7 @@ public class TestConfigUtil {
 		removeProp("key2");
 		removeProp("key3");
 		removeProp("key4");
-		resetConfigPath();
+		resetPath();
 		
 	}
 }

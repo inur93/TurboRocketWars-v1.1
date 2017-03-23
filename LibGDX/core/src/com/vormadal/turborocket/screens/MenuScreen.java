@@ -20,10 +20,12 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener.ChangeEvent;
-import com.vormadal.turborocket.TurboRocketWarsGame;
+import com.vormadal.turborocket.configurations.ButtonStyles;
+import com.vormadal.turborocket.configurations.ConfigManager;
+import com.vormadal.turborocket.configurations.Styles;
+import com.vormadal.turborocket.controllers.TurboRocketWarsGame;
+import com.vormadal.turborocket.controllers.TurboRocketWarsGame.GameMode;
 import com.vormadal.turborocket.models.actors.ActorBackground;
-import com.vormadal.turborocket.utils.styles.ButtonStyles;
-import com.vormadal.turborocket.utils.styles.Styles;
 
 public class MenuScreen implements Screen {
 	Skin skin;
@@ -31,10 +33,10 @@ public class MenuScreen implements Screen {
 	
 	SpriteBatch batch;
  
-	private Game g;
-	public MenuScreen(Game g){
+	private TurboRocketWarsGame game;
+	public MenuScreen(TurboRocketWarsGame g){
 		create();
-		this.g=g;
+		this.game=g;
 	}
  
 	public MenuScreen(){
@@ -45,10 +47,9 @@ public class MenuScreen implements Screen {
 	public void create(){
 		batch = new SpriteBatch();
 		stage = new Stage();
-		Gdx.input.setInputProcessor(stage);
 		
 		
-		Actor background = new ActorBackground("menu/frozen-olaf-background.png");
+		Actor background = new ActorBackground(ConfigManager.getInstance().getSettingValue(Styles.Const.mainMenuBackground));
 		// A skin can be loaded via JSON or defined programmatically, either is fine. Using a skin is optional but strongly
 		// recommended solely for the convenience of getting a texture, region, etc as a drawable, tinted drawable, etc.
 		
@@ -62,8 +63,7 @@ public class MenuScreen implements Screen {
 		final TextButton singlePlayerButton = new TextButton("Single player",textButtonStyle);
 		singlePlayerButton.addListener(new ChangeListener() {	
 			public void changed (ChangeEvent event, Actor actor) {
-//				g.setScreen(new GameScreen());
-				g.setScreen(new MapSelectScreen(g, 1));
+				game.selectGameMode(GameMode.SINGLE_PLAYER);
 			}
 		});
 		singlePlayerButton.setPosition(Gdx.graphics.getWidth()/2-buttonWidth/2, pos);
@@ -71,18 +71,28 @@ public class MenuScreen implements Screen {
 		
 		final TextButton multiPlayerButton = new TextButton("Multi player",textButtonStyle);
 		multiPlayerButton.setPosition(Gdx.graphics.getWidth()/2-buttonWidth/2, pos);
+		multiPlayerButton.addListener(new ChangeListener() {	
+			public void changed (ChangeEvent event, Actor actor) {
+				game.selectGameMode(GameMode.MULTI_PLAYER);
+			}
+		});
 		pos += nrmOffset;
 		
 		final TextButton settingsButton = new TextButton("Settings",textButtonStyle);
 		settingsButton.addListener(new ChangeListener() {	
 			public void changed (ChangeEvent event, Actor actor) {
-				g.setScreen( new SettingsScreen());
+				game.gotoSettings();
 			}
 		});
 		settingsButton.setPosition(Gdx.graphics.getWidth()/2-buttonWidth/2, pos);
 		pos += nrmOffset;
 		
 		final TextButton exitButton = new TextButton("Exit",textButtonStyle);
+		exitButton.addListener(new ChangeListener() {	
+			public void changed (ChangeEvent event, Actor actor) {
+				game.exitGame();
+			}
+		});
 		exitButton.setPosition(Gdx.graphics.getWidth()/2-buttonWidth/2, pos);
 		pos += nrmOffset;
 		
@@ -93,8 +103,6 @@ public class MenuScreen implements Screen {
 		stage.addActor(settingsButton);
 		stage.addActor(exitButton);
 		
-//		stage.addActor(textButton);
-//		stage.addActor(textButton);
  
 	}
  
@@ -121,8 +129,7 @@ public class MenuScreen implements Screen {
  
 	@Override
 	public void show() {
-		// TODO Auto-generated method stub
- 
+		Gdx.input.setInputProcessor(this.stage);
 	}
  
 	@Override

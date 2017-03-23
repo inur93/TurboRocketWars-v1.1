@@ -7,7 +7,7 @@ import com.badlogic.gdx.Input;
 public class InputConfiguration {
 
 	public enum InputType {WASD, ARROWS};
-	public enum InputCommands {BOOST, LEFT, RIGHT, FIRE_NORMAL, FIRE_SPECIAL}
+	public enum InputCommands {BOOST, LEFT, RIGHT, FIRE_NORMAL, FIRE_SPECIAL, ESC, ENTER}
 	
 	private HashMap<Integer, InputCommands> keyMappings = new HashMap<>();
 	private HashMap<InputCommands, Boolean> keyValues = new HashMap<>();
@@ -20,6 +20,8 @@ public class InputConfiguration {
 			keyMappings.put(Input.Keys.RIGHT, InputCommands.RIGHT);
 			keyMappings.put(Input.Keys.DOWN, InputCommands.FIRE_NORMAL);
 			keyMappings.put(Input.Keys.CONTROL_RIGHT, InputCommands.FIRE_SPECIAL);
+			keyMappings.put(Input.Keys.ESCAPE, InputCommands.ESC);
+			keyMappings.put(Input.Keys.ENTER, InputCommands.ENTER);
 			break;
 		case WASD:
 			keyMappings.put(Input.Keys.W, InputCommands.BOOST);

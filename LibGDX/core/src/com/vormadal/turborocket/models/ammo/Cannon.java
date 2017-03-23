@@ -1,10 +1,9 @@
 package com.vormadal.turborocket.models.ammo;
 
-import static com.vormadal.turborocket.utils.ConfigUtil.readFloat;
-import static com.vormadal.turborocket.utils.PropKeys.*;
+import static com.vormadal.turborocket.configurations.PropKeys.getShipMaxAmmo;
 
 import com.badlogic.gdx.math.Vector2;
-import com.vormadal.turborocket.WorldEntitiesController;
+import com.vormadal.turborocket.controllers.WorldEntitiesController;
 
 public class Cannon<T extends Ammo> {
 

@@ -1,5 +1,8 @@
 package com.vormadal.turborocket.models.actors;
 
+import static com.vormadal.turborocket.configurations.PropKeys.getHpBarHeight;
+import static com.vormadal.turborocket.configurations.PropKeys.getHpBarLength;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
@@ -9,9 +12,6 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.vormadal.turborocket.models.Player;
 import com.vormadal.turborocket.models.Ship;
 import com.vormadal.turborocket.models.ammo.Cannon;
-
-import static com.vormadal.turborocket.utils.ConfigUtil.*;
-import static com.vormadal.turborocket.utils.PropKeys.*;
 
 public class ActorPlayer extends Actor{
 

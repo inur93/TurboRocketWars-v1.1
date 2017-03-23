@@ -1,42 +1,37 @@
 package com.vormadal.turborocket.screens;
 
-import static com.vormadal.turborocket.utils.PropKeys.getMapKeys;
-
 import java.util.ArrayList;
 import java.util.List;
 
-import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
-import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener.ChangeEvent;
 import com.badlogic.gdx.utils.viewport.FitViewport;
-import com.vormadal.turborocket.InputManager;
-import com.vormadal.turborocket.InputManager.INPUT_MODE;
+import com.vormadal.turborocket.configurations.ButtonStyles;
+import com.vormadal.turborocket.configurations.ConfigManager;
+import com.vormadal.turborocket.configurations.LabelStyles;
+import com.vormadal.turborocket.configurations.PropKeys;
+import com.vormadal.turborocket.configurations.Styles;
+import com.vormadal.turborocket.controllers.InputManager;
+import com.vormadal.turborocket.controllers.InputManager.INPUT_MODE;
+import com.vormadal.turborocket.controllers.TurboRocketWarsGame;
+import com.vormadal.turborocket.models.actors.ActorBackground;
 import com.vormadal.turborocket.models.actors.ActorMap;
 import com.vormadal.turborocket.models.configs.MapConfig;
 import com.vormadal.turborocket.utils.InputConfiguration;
 import com.vormadal.turborocket.utils.InputConfiguration.InputType;
-import com.vormadal.turborocket.utils.styles.ButtonStyles;
-import com.vormadal.turborocket.utils.styles.LabelStyles;
-import com.vormadal.turborocket.utils.styles.Styles;
 import com.vormadal.turborocket.utils.InputListener;
-import com.vormadal.turborocket.utils.PropKeys;
-
-import test.XMLReader;
 
 public class MapSelectScreen implements Screen, InputListener{			
 
 	
+	private Stage backgroundStage;
 	private Stage mapsStage;
 	private Stage overlayStage; //for buttons and other info
 	final float PIXELS_TO_METERS = 100f;
@@ -53,23 +48,19 @@ public class MapSelectScreen implements Screen, InputListener{
 	private InputConfiguration inputConfiguration = new InputConfiguration(InputType.ARROWS);
 	private ArrayList<InputListener> listeners = new ArrayList<>();
 	private List<ActorMap> maps = new ArrayList<>();
-	private MapConfig[] mapConfigs;
+	private List<MapConfig> mapConfigs;
 	private int currentMap = 0;
 	private boolean moveLeft = false;
 	private boolean moveRight = false;
-	//debug
-	Matrix4 debugMatrix;
-	OrthographicCamera camera;
-	BitmapFont font;
-	private Game game;
-	private int numPlayers;
+	
+	private TurboRocketWarsGame game;
+	
 	/**
 	 * 
 	 * 
 	 */
-	public MapSelectScreen(Game game, int numPlayers) {
+	public MapSelectScreen(TurboRocketWarsGame game) {
 		this.game = game;
-		this.numPlayers = numPlayers;
 		listeners.add(this);
 		create();
 	}
@@ -78,18 +69,17 @@ public class MapSelectScreen implements Screen, InputListener{
 		PropKeys.setDefault();
 		//viewport width should be determined by number of players playing on same screen.
 		//the width is the size of the world that should be visible, thus the viewport is smaller on splitscreen.
+		backgroundStage = new Stage(new FitViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight()));
 		mapsStage = new Stage(new FitViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight()));
 		overlayStage = new Stage(new FitViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight()));
 		
+		backgroundStage.addActor(new ActorBackground(ConfigManager.getInstance().getSettingValue(Styles.Const.mapSelectMenuBackground)));
 		
 		Label titleLabel = new Label(title, LabelStyles.getTitleStyle());
 		
 		titleLabel.setPosition(Gdx.graphics.getWidth()/2-titleLabel.getWidth()/2, Gdx.graphics.getHeight()-100);
 		overlayStage.addActor(titleLabel);
 		
-		String[] mapPaths = getMapKeys();
-		mapConfigs = new MapConfig[mapPaths.length];
-		XMLReader mapReader = new XMLReader();
 		float mapWidth = Gdx.graphics.getWidth()*0.75f;
 		float mapHeight = Gdx.graphics.getHeight()*0.60f;
 
@@ -114,10 +104,10 @@ public class MapSelectScreen implements Screen, InputListener{
 		float mapX = Gdx.graphics.getWidth()/2-mapWidth/2;
 		float mapY = Gdx.graphics.getHeight()/2-mapHeight/2;
 		float xOffset = Gdx.graphics.getWidth();
-		int index = 0;
-		for(String path : mapPaths){
-			MapConfig config = mapReader.loadMap(path);
-			mapConfigs[index++] = config;
+
+		this.mapConfigs = ConfigManager.getInstance().getMaps();
+		for(MapConfig config : mapConfigs){
+
 			ActorMap actor = new ActorMap(config);
 			
 			//					actor.scaleBy(1.375f, 1.75f);
@@ -157,8 +147,7 @@ public class MapSelectScreen implements Screen, InputListener{
 		
 		TextButton selectBtn = new TextButton("SELECT", ButtonStyles.defaultStyle());
 		selectBtn.setPosition(Gdx.graphics.getWidth()/2-selectBtn.getWidth()/2, 10);
-		selectBtn.addListener(new ChangeListener() {
-			
+		selectBtn.addListener(new ChangeListener() {	
 			@Override
 			public void changed(ChangeEvent event, Actor actor) {
 				next();
@@ -168,17 +157,16 @@ public class MapSelectScreen implements Screen, InputListener{
 		
 		inputManager = new InputManager(listeners, INPUT_MODE.SIMPLE);
 		inputManager.addInputProcessor(overlayStage);
-		Gdx.input.setInputProcessor(inputManager);
 		updateMapInfo();
 
 	}
 	
 	private void back(){
-		game.setScreen(new MenuScreen(game));
+		game.gotoMainMenu();
 	}
 	
 	private void next(){
-		game.setScreen(new GameScreen(game, mapConfigs[currentMap], numPlayers));
+		game.selectMap(mapConfigs.get(currentMap));
 	}
 
 	@Override
@@ -210,8 +198,11 @@ public class MapSelectScreen implements Screen, InputListener{
 			}
 		}
 		
+		backgroundStage.act(delta);
 		mapsStage.act(delta);
 		overlayStage.act(delta);
+		
+		backgroundStage.draw();
 		mapsStage.draw();
 		overlayStage.draw();
 
@@ -219,9 +210,7 @@ public class MapSelectScreen implements Screen, InputListener{
 
 	@Override
 	public void resize(int width, int height) {
-		// TODO Auto-generated method stub
-		//				super.resize(width, height);
-
+		
 	}
 
 	@Override
@@ -231,8 +220,12 @@ public class MapSelectScreen implements Screen, InputListener{
 
 	@Override
 	public void show() {
-		// TODO Auto-generated method stub
-
+		mapsStage.getViewport().setScreenHeight(Gdx.graphics.getHeight());
+		mapsStage.getViewport().setScreenWidth(Gdx.graphics.getWidth());
+		mapsStage.getViewport().setScreenX(0);
+		mapsStage.getViewport().setScreenY(0);
+		mapsStage.getViewport().apply();
+		Gdx.input.setInputProcessor(this.inputManager);
 	}
 
 
@@ -266,7 +259,7 @@ public class MapSelectScreen implements Screen, InputListener{
 	}
 	
 	private void updateMapInfo(){
-		MapConfig map = mapConfigs[currentMap];
+		MapConfig map = mapConfigs.get(currentMap);
 		nameLbl.setText("name: " + map.name);
 		sizeLbl.setText("size: " + map.width + "x" + map.height);
 		descLbl.setText("description: " + map.description);

@@ -1,7 +1,8 @@
 package com.vormadal.turborocket.screens;
 
-import static com.vormadal.turborocket.utils.styles.Styles.getScrollStyle;
+import static com.vormadal.turborocket.configurations.Styles.getScrollStyle;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.badlogic.gdx.Gdx;
@@ -11,30 +12,41 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.vormadal.turborocket.configurations.ConfigManager;
+import com.vormadal.turborocket.configurations.LabelStyles;
+import com.vormadal.turborocket.configurations.Setting;
+import com.vormadal.turborocket.configurations.Styles;
+import com.vormadal.turborocket.configurations.XMLReader;
+import com.vormadal.turborocket.controllers.InputManager;
+import com.vormadal.turborocket.controllers.TurboRocketWarsGame;
+import com.vormadal.turborocket.controllers.InputManager.INPUT_MODE;
 import com.vormadal.turborocket.models.actors.ActorBackground;
 import com.vormadal.turborocket.models.actors.ActorSettingList;
 import com.vormadal.turborocket.models.actors.ActorSetting;
-import com.vormadal.turborocket.utils.Setting;
-import com.vormadal.turborocket.utils.styles.LabelStyles;
-import com.vormadal.turborocket.utils.styles.Styles;
+import com.vormadal.turborocket.utils.InputConfiguration;
+import com.vormadal.turborocket.utils.InputListenerAdapter;
+import com.vormadal.turborocket.utils.InputConfiguration.InputType;
+import com.vormadal.turborocket.utils.InputListener;
 
-import test.XMLReader;
 
-
-public class SettingsScreen implements Screen {
+public class SettingsScreen extends InputListenerAdapter implements Screen{
 
 	private static final String SETTINGS_CONFIG = "default-settings.config";
 	private ActorSettingList scrollView;
 	private Stage stage;
-	public SettingsScreen() {
-		
+	private TurboRocketWarsGame game;
+	private InputManager inputManager;
+	public SettingsScreen(TurboRocketWarsGame game) {
+		super(new InputConfiguration(InputType.ARROWS));
+		this.game = game;
 		create();
 	}
 	
 	private void create(){
 		stage = new Stage();
-		List<Setting> settings = new XMLReader().loadSettings(SETTINGS_CONFIG);
-
+				
+//		List<Setting> settings = new XMLReader().loadSettings(SETTINGS_CONFIG);
+		
 		
 		
 //		scrollView = new ActorSettingList(settings, stage);
@@ -80,7 +92,7 @@ public class SettingsScreen implements Screen {
 		
 //		stage.addActor(table);
 //		stage.addActor(scrollPane);
-		stage.addActor(new ActorBackground("menu/frozen-olaf-background.png"));
+		stage.addActor(new ActorBackground(ConfigManager.getInstance().getSettingValue(Styles.Const.settingsMenuBackground)));
 		stage.addActor(container);
 //		int yPos = 100;
 //		for(Setting s : settings){
@@ -119,8 +131,13 @@ public class SettingsScreen implements Screen {
 
 	@Override
 	public void show() {
-		// TODO Auto-generated method stub
-
+		if(inputManager == null){
+			List<InputListener> listeners = new ArrayList<>();
+			listeners.add(this);
+			inputManager = new InputManager(listeners, INPUT_MODE.SIMPLE);
+			inputManager.addInputProcessor(stage);
+		}
+		Gdx.input.setInputProcessor(inputManager);
 	}
 
 	@Override
@@ -139,6 +156,11 @@ public class SettingsScreen implements Screen {
 	public void resume() {
 		// TODO Auto-generated method stub
 
+	}
+	
+	@Override
+	public void esc() {
+		this.game.gotoMainMenu();
 	}
 	
 }

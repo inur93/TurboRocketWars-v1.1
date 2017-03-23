@@ -1,8 +1,17 @@
 package com.vormadal.turborocket.models;
 
-import static com.vormadal.turborocket.utils.ConfigUtil.*;
-import static com.vormadal.turborocket.utils.PropKeys.*;
-import static java.lang.Math.toDegrees;
+import static com.vormadal.turborocket.configurations.PropKeys.getShipAmmoRegenFrequency;
+import static com.vormadal.turborocket.configurations.PropKeys.getShipBoostImpulse;
+import static com.vormadal.turborocket.configurations.PropKeys.getShipDensity;
+import static com.vormadal.turborocket.configurations.PropKeys.getShipHpRegenFrequency;
+import static com.vormadal.turborocket.configurations.PropKeys.getShipLives;
+import static com.vormadal.turborocket.configurations.PropKeys.getShipMaxHp;
+import static com.vormadal.turborocket.configurations.PropKeys.getShipRegenAmmo;
+import static com.vormadal.turborocket.configurations.PropKeys.getShipRegenHp;
+import static com.vormadal.turborocket.configurations.PropKeys.getShipRotationSpeed;
+import static com.vormadal.turborocket.configurations.PropKeys.getShipScale;
+
+import java.util.UUID;
 
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
@@ -11,14 +20,13 @@ import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.vormadal.turborocket.WorldEntitiesController;
+import com.vormadal.turborocket.controllers.WorldEntitiesController;
 import com.vormadal.turborocket.models.actors.ActorShip;
 import com.vormadal.turborocket.models.ammo.Ammo;
 import com.vormadal.turborocket.models.ammo.Cannon;
 import com.vormadal.turborocket.tasks.AmmoRegenTask;
 import com.vormadal.turborocket.tasks.HPRegenTask;
 import com.vormadal.turborocket.utils.B2Separator;
-import com.vormadal.turborocket.utils.PropKeys;
 
 public class Ship<A1 extends Ammo, A2 extends Ammo> implements WorldEntity{
 	private final float shipScale = getShipScale();
@@ -65,7 +73,7 @@ public class Ship<A1 extends Ammo, A2 extends Ammo> implements WorldEntity{
 			Vector2 position, 
 			Cannon<A1> stdCannon, 
 			Cannon<A2> specialCannon) {
-		this.id = String.valueOf(PropKeys.nextId());
+		this.id = UUID.randomUUID().toString();
 		this.entitiesController = entitiesController;
 		
 		this.spawnPoint = position.cpy();

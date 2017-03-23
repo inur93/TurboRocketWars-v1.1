@@ -8,10 +8,10 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
-import com.vormadal.turborocket.utils.Setting;
-import com.vormadal.turborocket.utils.styles.ButtonStyles;
-import com.vormadal.turborocket.utils.styles.LabelStyles;
-import com.vormadal.turborocket.utils.styles.Styles;
+import com.vormadal.turborocket.configurations.ButtonStyles;
+import com.vormadal.turborocket.configurations.LabelStyles;
+import com.vormadal.turborocket.configurations.Setting;
+import com.vormadal.turborocket.configurations.Styles;
 
 public class ActorSetting {
 

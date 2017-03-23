@@ -1,12 +1,14 @@
 package com.vormadal.turborocket.models.ammo;
 
+import java.util.UUID;
+
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.vormadal.turborocket.WorldEntitiesController;
+import com.vormadal.turborocket.configurations.PropKeys;
+import com.vormadal.turborocket.controllers.WorldEntitiesController;
 import com.vormadal.turborocket.models.WorldEntity;
-import com.vormadal.turborocket.utils.PropKeys;
 
 public abstract class Ammo implements WorldEntity{
 
@@ -23,7 +25,7 @@ public abstract class Ammo implements WorldEntity{
 	protected Vector2 dir;
 	protected long startTime; // ms
 	
-	private int id; //for test
+	private String id; 
 	
 	public Ammo(Vector2 v0, Vector2 pos, Vector2 dir, float damage, float cost, long duration, WorldEntitiesController entitiesController) {
 		this.v0 = v0;
@@ -33,7 +35,7 @@ public abstract class Ammo implements WorldEntity{
 		this.damage = damage;
 		this.ammoCost = cost;
 		this.shotDuration = duration;
-		this.id = PropKeys.nextId();
+		this.id = UUID.randomUUID().toString();
 		this.entitiesController = entitiesController;	
 		this.startTime = System.currentTimeMillis();
 		this.entitiesController.createWhenReady(this);

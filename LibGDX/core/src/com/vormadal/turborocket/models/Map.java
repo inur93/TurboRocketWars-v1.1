@@ -9,7 +9,7 @@ import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.ChainShape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.vormadal.turborocket.WorldEntitiesController;
+import com.vormadal.turborocket.controllers.WorldEntitiesController;
 import com.vormadal.turborocket.models.actors.ActorMap;
 import com.vormadal.turborocket.models.configs.MapConfig;
 import com.vormadal.turborocket.models.configs.MapObjectConfig;

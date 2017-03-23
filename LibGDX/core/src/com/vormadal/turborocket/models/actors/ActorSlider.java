@@ -9,10 +9,10 @@ import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.ui.Container;
 import com.badlogic.gdx.scenes.scene2d.ui.Slider;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
-import com.vormadal.turborocket.utils.Setting;
-import com.vormadal.turborocket.utils.Setting.ValueType;
-import com.vormadal.turborocket.utils.styles.SliderStyles;
-import com.vormadal.turborocket.utils.styles.Styles;
+import com.vormadal.turborocket.configurations.Setting;
+import com.vormadal.turborocket.configurations.SliderStyles;
+import com.vormadal.turborocket.configurations.Styles;
+import com.vormadal.turborocket.configurations.Setting.ValueType;
 
 public class ActorSlider extends Container<Slider>{
 

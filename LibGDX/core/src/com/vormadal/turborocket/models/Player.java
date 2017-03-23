@@ -11,11 +11,13 @@ public class Player implements InputListener{
 	private float screenX, screenY, width, height;
 	private float posOffset;
 	
+	
 	public Player(Ship<?,?> ship, 
 			InputConfiguration config, 
 			float screenXPct, float screenYPct, 
 			float widthPct, float heightPct,
 			float posOffsetPct){
+		
 		this.setScreenX(screenXPct);
 		this.setScreenY(screenYPct);
 		this.setWidth(widthPct);
