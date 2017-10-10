@@ -1,5 +1,6 @@
 package com.vormadal.turborocket.models.ammo;
 
+import static com.vormadal.turborocket.configurations.PropKeys.TEX_SEEKER;
 import static com.vormadal.turborocket.configurations.PropKeys.getSeekerCacheShips;
 import static com.vormadal.turborocket.configurations.PropKeys.getSeekerCost;
 import static com.vormadal.turborocket.configurations.PropKeys.getSeekerDamage;
@@ -22,10 +23,11 @@ import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.Timer.Task;
+import com.vormadal.turborocket.configurations.ConfigManager;
 import com.vormadal.turborocket.controllers.WorldEntitiesController;
 import com.vormadal.turborocket.models.Ship;
 import com.vormadal.turborocket.models.WorldEntityData;
-import com.vormadal.turborocket.models.actors.ActorSeekerMissile;
+import com.vormadal.turborocket.models.actors.ActorAmmo;
 
 public class SeekerMissile extends Ammo {
 
@@ -91,8 +93,8 @@ public class SeekerMissile extends Ammo {
 		};
 		Timer.schedule(seekerTask, timeBeforeSeeking, seekerUpdateFrequency);
 		body.setUserData(new WorldEntityData(this));
-		
-		return (this.actor = new ActorSeekerMissile(this));
+		String texPath = ConfigManager.instance().getSettingValue(TEX_SEEKER);
+		return (this.actor = new ActorAmmo(this, texPath));
 	}
 	
 	@Override

@@ -27,7 +27,13 @@ public abstract class Ammo implements WorldEntity{
 	
 	private String id; 
 	
-	public Ammo(Vector2 v0, Vector2 pos, Vector2 dir, float damage, float cost, long duration, WorldEntitiesController entitiesController) {
+	public Ammo(Vector2 v0, 
+			Vector2 pos, 
+			Vector2 dir,
+			float damage, 
+			float cost, 
+			long duration, 
+			WorldEntitiesController entitiesController) {
 		this.v0 = v0;
 		this.pos = pos;
 		this.dir = dir.cpy();

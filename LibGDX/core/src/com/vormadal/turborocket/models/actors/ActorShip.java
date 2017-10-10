@@ -15,56 +15,39 @@ import com.vormadal.turborocket.utils.ActorUtil;
 public class ActorShip extends Actor {
 
 	private Ship<?,?> ship;
-	private Texture tex;// = new Texture(Gdx.files.internal("ships/ship-elsa.png"));
-//	private Texture verTex = new Texture(Gdx.files.internal("axis-vertical.png"));
-//	private Texture horTex = new Texture(Gdx.files.internal("axis-horizontal.png"));
-	
-	private Sprite sprite;// = new Sprite(tex);
+	private Texture tex;
+	private Sprite sprite;
 	private boolean initialized = false;
-//	private Sprite ver = new Sprite(verTex);
-//	private Sprite hor = new Sprite(horTex);
-	
-	public ActorShip(Ship<?, ?> ship){
-		this.ship = ship;
-	}
 
-	public ActorShip(ShipConfig config) {
-		String texturePath = ConfigManager.getInstance().getSettingValue(config.textureId);
+	public ActorShip(Ship<?,?> ship, ShipConfig config) {
+		this.ship = ship;
+		String texturePath = ConfigManager.instance().getSettingValue(config.textureId);
 		this.tex = new Texture(Gdx.files.internal(texturePath));
 		this.sprite = new Sprite(tex);
-		
-		
-//		Vector2 bounds = new Vector2(x, y)
-//		sprite.setBounds(0, 0, bounds.x, bounds.y);
-//		sprite.setOrigin(bounds.x/2, bounds.y/2);
 	}
-	
+
 	@Override
 	public void draw(Batch batch, float parentAlpha) {
-		Body body = ship.getBody();
+
 
 		if(!initialized){
-			
+
 			initialized = true;
 		}
 		if(ship != null){
-		Vector2 pos = body.getPosition();
+			Body body = ship.getBody();
+			Vector2 pos = body.getPosition();
 
-//		ship.getBody().getPosition()
-		sprite.setRotation(ship.getBody().getAngle()*MathUtils.radiansToDegrees);
-		
-		batch.draw(sprite, pos.x-sprite.getWidth()/2, pos.y-sprite.getHeight()/2, 
-				sprite.getOriginX(), sprite.getOriginY(), 
-				sprite.getWidth(), sprite.getHeight(), 
-				sprite.getScaleX(), sprite.getScaleY(), 
-				sprite.getRotation());
+			sprite.setRotation(ship.getBody().getAngle()*MathUtils.radiansToDegrees);
+
+			batch.draw(sprite, pos.x-sprite.getWidth()/2, pos.y-sprite.getHeight()/2, 
+					sprite.getOriginX(), sprite.getOriginY(), 
+					sprite.getWidth(), sprite.getHeight(), 
+					sprite.getScaleX(), sprite.getScaleY(), 
+					sprite.getRotation());
 
 		}else{
-//			batch.draw(sprite, sprite.getX(), sprite.getY(), 
-//					sprite.getOriginX(), sprite.getOriginY(), 
-//					sprite.getWidth(), sprite.getHeight(), 
-//					sprite.getScaleX(), sprite.getScaleY(), 
-//					sprite.getRotation());
+			//'Demo' Version when players select ship, the body is not required
 			batch.draw(sprite, this.getX(), this.getY(), 
 					this.getOriginX(), this.getOriginY(), 
 					this.getWidth(), this.getHeight(), 

@@ -66,14 +66,14 @@ public class MapSelectScreen implements Screen, InputListener{
 	}
 
 	public void create() {
-		PropKeys.setDefault();
+		ConfigManager.instance().loadDefaultSettings();
 		//viewport width should be determined by number of players playing on same screen.
 		//the width is the size of the world that should be visible, thus the viewport is smaller on splitscreen.
 		backgroundStage = new Stage(new FitViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight()));
 		mapsStage = new Stage(new FitViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight()));
 		overlayStage = new Stage(new FitViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight()));
 		
-		backgroundStage.addActor(new ActorBackground(ConfigManager.getInstance().getSettingValue(Styles.Const.mapSelectMenuBackground)));
+		backgroundStage.addActor(new ActorBackground(ConfigManager.instance().getSettingValue(Styles.Const.mapSelectMenuBackground)));
 		
 		Label titleLabel = new Label(title, LabelStyles.getTitleStyle());
 		
@@ -105,7 +105,7 @@ public class MapSelectScreen implements Screen, InputListener{
 		float mapY = Gdx.graphics.getHeight()/2-mapHeight/2;
 		float xOffset = Gdx.graphics.getWidth();
 
-		this.mapConfigs = ConfigManager.getInstance().getMaps();
+		this.mapConfigs = ConfigManager.instance().getMaps();
 		for(MapConfig config : mapConfigs){
 
 			ActorMap actor = new ActorMap(config);

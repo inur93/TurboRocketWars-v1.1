@@ -8,9 +8,10 @@ import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.vormadal.turborocket.configurations.ConfigManager;
 import com.vormadal.turborocket.controllers.WorldEntitiesController;
 import com.vormadal.turborocket.models.WorldEntityData;
-import com.vormadal.turborocket.models.actors.ActorFragment;
+import com.vormadal.turborocket.models.actors.ActorAmmo;
 
 public class Fragment extends Ammo {
 
@@ -32,7 +33,8 @@ public class Fragment extends Ammo {
 	    body.createFixture(shape, getFragmentDensity());
 		body.applyLinearImpulse(dir.scl(impFactor), pos, true);
 		body.setUserData(new WorldEntityData(this));
-		return (this.actor = new ActorFragment(this));
+		String texPath = ConfigManager.instance().getSettingValue(TEX_FRAGMENT);
+		return (this.actor = new ActorAmmo(this, texPath));
 	}
 	
 

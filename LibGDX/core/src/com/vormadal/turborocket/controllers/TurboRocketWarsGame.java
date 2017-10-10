@@ -39,7 +39,13 @@ public class TurboRocketWarsGame extends Game  {
 		this.mapSelectScreen = new MapSelectScreen(this);
 		this.playerOptionsScreen = new PlayerOptionsScreen(this);
 		this.settingsScreen = new SettingsScreen(this);
-//		this.gameScreen = new GameScreen(this, map, numPlayers)
+		this.gameScreen = new GameScreen(this, configManager.getMaps().get(0), 2);
+		
+		try{
+			Thread.sleep(2000);
+		}catch(Exception e){
+			
+		}
 		setScreen(menuScreen);
 	}
 	

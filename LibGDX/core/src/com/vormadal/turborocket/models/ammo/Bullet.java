@@ -1,6 +1,12 @@
 package com.vormadal.turborocket.models.ammo;
 
-import static com.vormadal.turborocket.configurations.PropKeys.*;
+import static com.vormadal.turborocket.configurations.PropKeys.TEX_BULLET;
+import static com.vormadal.turborocket.configurations.PropKeys.getBulletCost;
+import static com.vormadal.turborocket.configurations.PropKeys.getBulletDamage;
+import static com.vormadal.turborocket.configurations.PropKeys.getBulletDensity;
+import static com.vormadal.turborocket.configurations.PropKeys.getBulletDuration;
+import static com.vormadal.turborocket.configurations.PropKeys.getBulletSize;
+import static com.vormadal.turborocket.configurations.PropKeys.getBulletSpeed;
 
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.BodyDef;
@@ -8,9 +14,10 @@ import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.vormadal.turborocket.configurations.ConfigManager;
 import com.vormadal.turborocket.controllers.WorldEntitiesController;
 import com.vormadal.turborocket.models.WorldEntityData;
-import com.vormadal.turborocket.models.actors.ActorBullet;
+import com.vormadal.turborocket.models.actors.ActorAmmo;
 
 public class Bullet extends Ammo {
 
@@ -40,7 +47,8 @@ public class Bullet extends Ammo {
 	    body.setLinearVelocity(v0);
 	    body.applyLinearImpulse(dir.scl(BULLET_SPEED), pos, true);
 	    body.setUserData(new WorldEntityData(this));
-	    return (this.actor = new ActorBullet(this));
+	    String texPath = ConfigManager.instance().getSettingValue(TEX_BULLET);
+	    return (this.actor = new ActorAmmo(this, texPath));
 	}
 	
 	

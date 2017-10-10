@@ -1,16 +1,15 @@
 package com.vormadal.turborocket.configurations;
 
-import java.util.HashMap;
 public class PropKeys {
 
-//	private static int NEXT_ID = 0;
-//	public static int nextId() {
-//		return NEXT_ID++;
-//	}
+	public static final String TEX_FRAGMENT = "tex-fragment";
+	public static final String TEX_BOMB = "tex-bomb";
+	public static final String TEX_BULLET = "tex-bullet";
+	public static final String TEX_SEEKER = "tex-seeker";
 	
 	//screen configs
 	private static final String STATS_BAR_HEIGHT = "STATS_BAR_HEIGHT";	//config
-	private static final String HP_BAR_LENGTH = "HP_BAR_SIZE";			//config
+	private static final String HP_BAR_LENGTH = "HP_BAR_LENGTH";			//config
 	private static final String HP_BAR_HEIGHT = "HP_BAR_HEIGHT";		//config
 	private static final String STATS_BAR_X_OFFSET = "STATS_BAR_X_OFFSET";	//config
 	private static final String STATS_BAR_Y_OFFSET = "STATS_BAR_Y_OFFSET";	//config	
@@ -33,6 +32,8 @@ public class PropKeys {
 	private static final String BOMB_TIME_TO_DETONATE = "BOMB_TIME_TO_DETONATE";
 	private static final String BOMB_EXPLOSION_IMPULSE = "BOMB_EXPLOSION_IMPULSE";
 	private static final String BOMB_SIZE = "BOMB_SIZE";
+	
+	
 	
 	private static final String FRAGMENT_COST = "FRAGMENT_COST";
 	private static final String FRAGMENT_DAMAGE = "FRAGMENT_DAMAGE";
@@ -68,51 +69,37 @@ public class PropKeys {
 	private static final String SHIP_SCALE = "SHIP_SCALE";
 	private static final String SHIP_DENSITY = "SHIP_DENSITY";
 	
-	private static HashMap<String, Setting> settingLookup = new HashMap<>();
+//	private static HashMap<String, Setting> settingLookup = new HashMap<>();
 	
-	public static void setDefault(){
-//		List<Setting> settings = new XMLReader().loadSettings("default-settings.config");
-//		for(Setting s : settings){
-//			settingLookup.put(s.id, s);
-//		}
-	}
 	
-	public static int readInt(String id){
-		Setting s = settingLookup.get(id);	
-		System.out.println("setting " + id + ": " + (s == null ? "null" : s.value));
-		if(s == null || !s.validate()) return 0;
-		return Integer.valueOf(s.value);
+	private static int readInt(String id){
+		System.out.println("load setting: " + id);
+		String s = ConfigManager.instance().getSettingValue(id);	
+		System.out.println("setting " + id + "=" + s);
+		if(s == null) return 0;
+		return Integer.valueOf(s);
 	}
-	public static float readFloat(String id){
-		Setting s = settingLookup.get(id);		
-		System.out.println("setting " + id + ": " + (s == null ? "null" : s.value));
-		if(s == null || !s.validate()) return 0;
-		return Float.valueOf(s.value);
+	private static float readFloat(String id){
+		System.out.println("load setting: " + id);
+		String s = ConfigManager.instance().getSettingValue(id);			
+		System.out.println("setting " + id + "=" + s);
+		if(s == null) return 0;
+		return Float.valueOf(s);
 	}
-	public static boolean readBoolean(String id){
-		Setting s = settingLookup.get(id);		
-		System.out.println("setting " + id + ": " + (s == null ? "null" : s.value));
-		if(s == null || !s.validate()) return false;
-		return Boolean.valueOf(s.value);
+	private static boolean readBoolean(String id){
+		System.out.println("load setting: " + id);
+		String s = ConfigManager.instance().getSettingValue(id);
+		System.out.println("setting " + id + "=" + s);
+		if(s == null) return false;
+		return Boolean.valueOf(s);
 	}
-	public static long readLong(String id){
-		Setting s = settingLookup.get(id);		
-		System.out.println("setting " + id + ": " + (s == null ? "null" : s.value));
-		if(s == null || !s.validate()) return 0;
-		return Long.valueOf(s.value);
+	private static long readLong(String id){
+		System.out.println("load setting: " + id);
+		String s = ConfigManager.instance().getSettingValue(id);
+		System.out.println("setting " + id + "=" + s);
+		if(s == null) return 0;
+		return Long.valueOf(s);
 	}
-	
-//	public static int getNEXT_ID() {
-//		return NEXT_ID;
-//	}
-
-
-
-//	public static void setNEXT_ID(int nEXT_ID) {
-//		NEXT_ID = nEXT_ID;
-//	}
-
-
 
 	public static int getStatsBarHeight() {
 		return readInt(STATS_BAR_HEIGHT);
@@ -344,9 +331,5 @@ public class PropKeys {
 
 	public static float getShipScale() {
 		return readFloat(SHIP_SCALE);
-	}
-	
-	
-	
-	
+	}	
 }

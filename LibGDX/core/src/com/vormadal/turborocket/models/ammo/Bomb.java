@@ -10,9 +10,10 @@ import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.Timer.Task;
+import com.vormadal.turborocket.configurations.ConfigManager;
 import com.vormadal.turborocket.controllers.WorldEntitiesController;
 import com.vormadal.turborocket.models.WorldEntityData;
-import com.vormadal.turborocket.models.actors.ActorBomb;
+import com.vormadal.turborocket.models.actors.ActorAmmo;
 
 
 public class Bomb  extends Ammo{
@@ -56,7 +57,8 @@ public class Bomb  extends Ammo{
 		Timer.schedule(task, timeToDetonate);
 		
 		body.setUserData(new WorldEntityData(this));
-		return (this.actor = new ActorBomb(this));
+		String texPath = ConfigManager.instance().getSettingValue(TEX_BOMB);
+		return (this.actor = new ActorAmmo(this, texPath));
 	}
 
 	@Override

@@ -7,28 +7,32 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.vormadal.turborocket.models.ammo.SeekerMissile;
+import com.vormadal.turborocket.models.ammo.Ammo;
 import com.vormadal.turborocket.utils.ActorUtil;
 
-public class ActorSeekerMissile extends Actor{
-	private SeekerMissile seeker;
-	private Texture tex = new Texture(Gdx.files.internal("ammo/fragment.png"));
-	private Sprite sprite = new Sprite(tex);
-	public ActorSeekerMissile(SeekerMissile seeker){
-		this.seeker = seeker;
-		Vector2 bounds = ActorUtil.getSize(seeker.getBody());
+public class ActorAmmo extends Actor {
+	
+	private Ammo ammo;
+	private Sprite sprite;
+	public ActorAmmo(Ammo ammo, String texture){
+		this.ammo = ammo;
+		Texture tex = new Texture(Gdx.files.internal(texture));
+		this.sprite = new Sprite(tex);
+		Vector2 bounds = ActorUtil.getSize(ammo.getBody());
 		sprite.setBounds(0, 0, bounds.x, bounds.y);
+		
 	}
 	
 	@Override
 	public void draw(Batch batch, float parentAlpha) {
-		Vector2 pos = seeker.getBody().getPosition();
+		Vector2 pos = ammo.getBody().getPosition();
 		
-		sprite.setRotation(seeker.getBody().getAngle()*MathUtils.radiansToDegrees);
+		sprite.setRotation(ammo.getBody().getAngle()*MathUtils.radiansToDegrees);
 		batch.draw(sprite, pos.x, pos.y, 
 				sprite.getOriginX(), sprite.getRegionY(), 
 				sprite.getWidth(), sprite.getHeight(), 
 				sprite.getScaleX(), sprite.getScaleY(), 
 				sprite.getRotation());
 	}
+
 }

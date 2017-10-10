@@ -1,13 +1,12 @@
 package com.vormadal.turborocket.configurations;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 
 import com.vormadal.turborocket.exceptions.NoConfigException;
 import com.vormadal.turborocket.models.configs.MapConfig;
 import com.vormadal.turborocket.models.configs.ShipConfig;
-
-import junit.framework.Assert;
 
 public class ConfigManager {
 
@@ -33,6 +32,7 @@ public class ConfigManager {
 	private static final String SHIP_SETTINGS = "ships-settings";
 	private static final String SKINS = "skins";
 	private static final String DEFAULT_SKIN_ID = "default-skin-id";
+	private static final String DEFAULT_SETTINGS = "default-settings.config";
 	
 	//minimum config ids
 	private static final String SCREEN_WIDTH = "screen-width";
@@ -41,7 +41,7 @@ public class ConfigManager {
 	
 	
 	private static ConfigManager instance;
-	public static ConfigManager getInstance(){
+	public static ConfigManager instance(){
 		if(instance == null) instance = new ConfigManager();
 		return instance;
 	}
@@ -78,11 +78,20 @@ public class ConfigManager {
 		try{
 		loadSkinConfigs(skinsPath);
 		SettingsFile generalSettings = loadSettings(getSettingValue(GENERAL_SETTINGS));
+		this.settings.putAll(generalSettings.settings);
 		SettingsFile screenSettings = loadSettings(getSettingValue(SCREEN_SETTINGS));
+		this.settings.putAll(screenSettings.settings);
 		List<SkinConfig> skinConfigs = configReader.loadSkins(getSettingValue(SKINS));
+		
 		
 		this.maps = configReader.loadMaps(getSettingValue(MAPS_SETTINGS));
 		this.ships = configReader.loadShips(getSettingValue(SHIP_SETTINGS));
+		
+		Iterator<String> keys = this.settings.keySet().iterator();
+		while(keys.hasNext()){
+			String key = keys.next();
+			System.out.println("key: " + key + "=" + this.settings.get(key));
+		}
 		}catch(NoConfigException e){
 			//TODO log
 			e.printStackTrace();
@@ -90,7 +99,16 @@ public class ConfigManager {
 			System.exit(0);
 		}
 	}
+	public void loadDefaultSettings(){
+		try {
+			loadSettings(DEFAULT_SETTINGS);
+		} catch (NoConfigException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
 	private SettingsFile loadSettings(String path) throws NoConfigException{
+
 		SettingsFile file = configReader.loadSettings(path);
 		this.settings.putAll(file.settings);
 		return file;
@@ -115,6 +133,16 @@ public class ConfigManager {
 			
 		}
 		Styles.init(this.skin);
+	}
+	
+	public void saveSettings(HashMap<String, String> values){
+		values.forEach((k,v)->{
+			settings.get(k).value = v;
+		});
+	}
+	
+	public void saveSetting(String id, String value){
+		
 	}
 
 	public String getDefaultFontPath(){
@@ -145,12 +173,17 @@ public class ConfigManager {
 		return this.ships;
 	}
 	
-	public Setting getSetting(String id){
+	private Setting getSetting(String id){
 		return this.settings.get(id);
 	}
 	
 	public String getSettingValue(String id){
-		return getSetting(id).value;
+		Setting setting = getSetting(id);
+		if(setting == null) {
+			System.err.println("No setting for: " + id);
+			return "";
+		}
+		return setting.value;
 	}
 
 	

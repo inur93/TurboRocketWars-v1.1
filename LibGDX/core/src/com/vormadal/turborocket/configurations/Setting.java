@@ -115,12 +115,12 @@ public class Setting {
 		return "Setting{\n"
 				+ "name: " + name + "\n"
 				+ "value: " + value + "\n"
-				+ "setting type: " + settingType.toString() + "\n"
+				+ "setting type: " + settingType + "\n"
 				+ "value type: " + valueType + "\n"
 				+ "description: " + description + "\n"
-				+ "min value: " + validation.minValue + "\n"
-				+ "max value: " + validation.maxValue + "\n"
-				+ "regex: " + validation.regEx + "\n"
+				+ "min value: " + validation  == null ? "null" :  validation.minValue + "\n"
+				+ "max value: " + validation  == null ? "null" : validation.maxValue + "\n"
+				+ "regex: " + validation  == null ? "null" : validation.regEx + "\n"
 				+ "}\n";
 	}
 

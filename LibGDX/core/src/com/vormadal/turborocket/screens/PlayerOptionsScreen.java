@@ -8,6 +8,7 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.viewport.FillViewport;
+import com.vormadal.turborocket.configurations.Styles;
 import com.vormadal.turborocket.controllers.InputManager;
 import com.vormadal.turborocket.controllers.InputManager.INPUT_MODE;
 import com.vormadal.turborocket.controllers.PlayerOptionsController;
@@ -18,7 +19,7 @@ import com.vormadal.turborocket.utils.InputConfiguration.InputType;
 import com.vormadal.turborocket.utils.InputListener;
 import com.vormadal.turborocket.utils.InputListenerAdapter;
 
-public class PlayerOptionsScreen extends InputListenerAdapter implements Screen{			
+public class PlayerOptionsScreen extends BasicScreen{			
 
 	private boolean isInitialized = false;
 	private TurboRocketWarsGame game;
@@ -30,7 +31,7 @@ public class PlayerOptionsScreen extends InputListenerAdapter implements Screen{
 	 * @param numPlayers - should be 1 or 2
 	 */
 	public PlayerOptionsScreen(TurboRocketWarsGame game) {
-		super(new InputConfiguration(InputType.ARROWS));
+		super("", Styles.Const.playerOptionsMenuBackground, new InputConfiguration(InputType.ARROWS));
 		this.game = game;
 	}
 
@@ -38,7 +39,6 @@ public class PlayerOptionsScreen extends InputListenerAdapter implements Screen{
 		if(isInitialized){
 			dispose(); // release all current resources before creating new ones.
 		}
-		backgroundStage = new Stage(new FillViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight()));
 		PlayerConfig[] players = game.getPlayerConfigs();
 		List<InputListener> listeners = new ArrayList<>();
 		int numPlayers = players.length;

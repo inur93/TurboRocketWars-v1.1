@@ -4,28 +4,20 @@ import java.util.List;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Camera;
-import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
-import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
-import com.badlogic.gdx.utils.viewport.FillViewport;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.vormadal.turborocket.configurations.ButtonStyles;
 import com.vormadal.turborocket.configurations.ConfigManager;
-import com.vormadal.turborocket.configurations.XMLReader;
-import com.vormadal.turborocket.models.actors.ActorMap;
 import com.vormadal.turborocket.models.actors.ActorShip;
-import com.vormadal.turborocket.models.configs.MapConfig;
 import com.vormadal.turborocket.models.configs.PlayerConfig;
 import com.vormadal.turborocket.models.configs.ScreenConfig;
 import com.vormadal.turborocket.models.configs.ShipConfig;
 import com.vormadal.turborocket.screens.PlayerOptionsScreen;
 import com.vormadal.turborocket.utils.InputConfiguration;
 import com.vormadal.turborocket.utils.InputListener;
-
-import sun.net.www.content.audio.wav;
 
 public class PlayerOptionsController implements InputListener{
 
@@ -67,10 +59,10 @@ public class PlayerOptionsController implements InputListener{
 		float mapY = Gdx.graphics.getHeight()/2-height/2;
 		float xOffset = Gdx.graphics.getWidth();
 
-		this.shipConfigs = ConfigManager.getInstance().getShips();
+		this.shipConfigs = ConfigManager.instance().getShips();
 		for(ShipConfig config : shipConfigs){
 
-			ActorShip actor = new ActorShip(config);
+			ActorShip actor = new ActorShip(null, config);
 			
 			//					actor.scaleBy(1.375f, 1.75f);
 			actor.setSize(width, height);
@@ -132,21 +124,21 @@ public class PlayerOptionsController implements InputListener{
 	}
 	public void render(float delta){
 
-		Camera cam = shipStage.getCamera();
-		if(moveLeft){
-			cam.translate(-Gdx.graphics.getWidth()/30, 0, 0);
-			if(cam.position.x <= mapX){
-				cam.translate(mapX-cam.position.x, 0, 0);
-				moveLeft = false;
-			}
-		}
-		if(moveRight){
-			cam.translate(Gdx.graphics.getWidth()/30, 0, 0);
-			if(cam.position.x >= mapX){
-				cam.translate(mapX-cam.position.x, 0, 0);
-				moveRight = false;
-			}
-		}
+//		Camera cam = shipStage.getCamera();
+//		if(moveLeft){
+//			cam.translate(-Gdx.graphics.getWidth()/30, 0, 0);
+//			if(cam.position.x <= mapX){
+//				cam.translate(mapX-cam.position.x, 0, 0);
+//				moveLeft = false;
+//			}
+//		}
+//		if(moveRight){
+//			cam.translate(Gdx.graphics.getWidth()/30, 0, 0);
+//			if(cam.position.x >= mapX){
+//				cam.translate(mapX-cam.position.x, 0, 0);
+//				moveRight = false;
+//			}
+//		}
 		setupStage(shipStage);
 		shipStage.act();
 		shipStage.draw();

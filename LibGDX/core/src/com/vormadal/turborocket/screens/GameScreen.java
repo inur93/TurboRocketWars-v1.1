@@ -21,6 +21,7 @@ import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.viewport.FillViewport;
 import com.badlogic.gdx.utils.viewport.FitViewport;
+import com.vormadal.turborocket.configurations.ConfigManager;
 import com.vormadal.turborocket.configurations.PropKeys;
 import com.vormadal.turborocket.controllers.CollisionController;
 import com.vormadal.turborocket.controllers.InputManager;
@@ -49,7 +50,6 @@ public class GameScreen implements Screen {
 		private CollisionController collisionController;
 		private Stage stage;
 		private Stage statsStage;
-//		private SpriteBatch batch;
 		private World world;
 		Fragment frag;
 		
@@ -74,7 +74,7 @@ public class GameScreen implements Screen {
 	    
 		public void create() {
 			
-			PropKeys.setDefault();
+			ConfigManager.instance().loadDefaultSettings();
 			//viewport width should be determined by number of players playing on same screen.
 			//the width is the size of the world that should be visible, thus the viewport is smaller on splitscreen.
 			stage = new Stage(new FitViewport(Gdx.graphics.getWidth()/2, Gdx.graphics.getHeight()-statsBarHeight));//new ExtendViewport(640, 480));//new ScreenViewport());
@@ -129,7 +129,7 @@ public class GameScreen implements Screen {
 			Cannon<SeekerMissile> seeker = new Cannon<SeekerMissile>(entitiesController, new SeekerMissile.SeekerFactory(), 3, true, 100);
 			
 			
-			return new Ship<>(entitiesController, spawnPoint, bullets, seeker);
+			return new Ship<>(ConfigManager.instance().getShips().get(0), entitiesController, spawnPoint, bullets, seeker);
 		}
 
 		@Override

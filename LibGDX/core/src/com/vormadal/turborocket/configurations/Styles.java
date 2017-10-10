@@ -46,7 +46,7 @@ public class Styles {
 		skin.add(Const.TEXT_FIELD_CURSOR, new Texture(new FileHandle(getPath(Const.TEXT_FIELD_CURSOR))));
 		
 		//add font
-		ConfigManager mgr = ConfigManager.getInstance();
+		ConfigManager mgr = ConfigManager.instance();
 		String defaultFontPath = mgr.getDefaultFontPath();
 		String customDefaultFont = null;
 		if((customDefaultFont = getPath(Const.FONT_DEFAULT)) != null) defaultFontPath = customDefaultFont;
@@ -68,8 +68,10 @@ public class Styles {
 		textFieldStyle.cursor = skin.newDrawable(Const.TEXT_FIELD_CURSOR, Color.BLACK);
 		
 
+		
 		scrollStyle = new ScrollPaneStyle();
-		scrollStyle.background = skin.newDrawable(Const.V_SLIDER_BACKGROUND, Color.WHITE);
+		//scrollStyle.background = skin.newDrawable(Const.V_SLIDER_BACKGROUND, Color.WHITE);
+		scrollStyle.vScroll = skin.newDrawable(Const.V_SLIDER_BACKGROUND, Color.WHITE);
 		scrollStyle.vScrollKnob = skin.newDrawable(Const.SLIDER_KNOB, Color.WHITE);
 		scrollStyle.vScroll = skin.newDrawable(Const.V_SLIDER_BACKGROUND, Color.WHITE);
 		

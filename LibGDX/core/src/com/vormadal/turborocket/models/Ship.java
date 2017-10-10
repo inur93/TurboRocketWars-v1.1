@@ -24,6 +24,7 @@ import com.vormadal.turborocket.controllers.WorldEntitiesController;
 import com.vormadal.turborocket.models.actors.ActorShip;
 import com.vormadal.turborocket.models.ammo.Ammo;
 import com.vormadal.turborocket.models.ammo.Cannon;
+import com.vormadal.turborocket.models.configs.ShipConfig;
 import com.vormadal.turborocket.tasks.AmmoRegenTask;
 import com.vormadal.turborocket.tasks.HPRegenTask;
 import com.vormadal.turborocket.utils.B2Separator;
@@ -68,7 +69,7 @@ public class Ship<A1 extends Ammo, A2 extends Ammo> implements WorldEntity{
 	private HPRegenTask hpRegenerator = null;
 	private AmmoRegenTask ammoRegen = null;
 
-	public Ship(
+	public Ship(ShipConfig config,
 			WorldEntitiesController entitiesController,
 			Vector2 position, 
 			Cannon<A1> stdCannon, 
@@ -79,7 +80,7 @@ public class Ship<A1 extends Ammo, A2 extends Ammo> implements WorldEntity{
 		this.spawnPoint = position.cpy();
 		this.cannonStd = stdCannon;
 		this.cannon1 = specialCannon;
-		this.actor = new ActorShip(this);
+		this.actor = new ActorShip(this, config);
 		entitiesController.createWhenReady(this);
 	}
 

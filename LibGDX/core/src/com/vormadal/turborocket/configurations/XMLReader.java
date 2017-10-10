@@ -251,8 +251,6 @@ public class XMLReader {
 	}
 
 	private static final String BACKGROUND_PATH = "background";
-	//	private static final String NAME = "name";
-	//	private static final String DESCRIPTION = "description";
 	private static final String MAP = "map";
 	private static final String WIDTH = "width";
 	private static final String HEIGHT = "height";
@@ -335,7 +333,7 @@ public class XMLReader {
 		ShipConfig ship = new ShipConfig();
 		Node shipNode;
 		Element element = getDocElement(path);
-		if(element == null) throw new NoConfigException("no map config found at " + path);
+		if(element == null) throw new NoConfigException("no ship config found at " + path);
 		
 		NodeList nodeList = element.getElementsByTagName(SHIP);
 		if(nodeList.getLength() <= 0) return null;
